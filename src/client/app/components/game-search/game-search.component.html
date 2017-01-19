@@ -1,0 +1,31 @@
+<md-toolbar [ngClass]="['md-primary','md-hue-3','game-search-container']">
+  <div class="form-group" [class.has-danger]="searchFailed">
+    <input
+      type="text"
+      class="form-control"
+      focusFirst
+      showHint
+      placeholder="Giant Bomb search ..."
+      [(ngModel)]="model"
+      [ngbTypeahead]="search"
+      [inputFormatter]="inputFormatter"
+      [resultFormatter]="resultFormatter"
+      [resultTemplate]="gameMatchTemplate"/>
+    <div class="form-control-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+  </div>
+</md-toolbar>
+
+<template #gameMatchTemplate let-r="result" let-t="term">
+  <div [ngClass]="['game-search-item-container']" fxLayout="row">
+    <img [ngClass]="['game-search-item-icon']" [src]="r.image">
+    <div fxLayout="column" fxFlex>
+      <div>{{ r.name }}</div>
+      <div [ngClass]="['game-search-item-platforms']">{{ r.platforms }}</div>
+    </div>
+    <button md-mini-fab class="md-primary" (click)="addGame(r)">
+      <md-icon class="md-18">add</md-icon>
+    </button>
+  </div>
+</template>
+
+<md-spinner *ngIf="searching" [ngClass]="['game-search-spinner','md-primary md-hue-2']" mode="indeterminate"></md-spinner>

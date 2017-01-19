@@ -1,0 +1,30 @@
+.form-control {
+
+}
+.form-group {
+
+}
+.game-search-container {
+
+}
+.game-search-spinner {
+  position: absolute;
+  margin: auto;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+.game-search-item-container {
+  height:10%;
+  width:100%;
+}
+.game-search-item-platforms {
+  font-size: 10pt;
+}
+.game-search-item-icon {
+  width:auto;
+  height:100%;
+  padding-right: 10pt;
+}
