@@ -1,8 +1,10 @@
-import {Component,OnInit,OnDestroy} from "@angular/core";
-import {GameService} from "../../shared/game/game.service";
-import {Game} from "../../shared/game/game";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { MaterialModule } from '@angular/material';
 
 import { Subscription }   from 'rxjs/Subscription';
+
+import { GameService } from "../../shared/game/game.service";
+import { Game } from "../../shared/game/game";
 
 @Component({
   selector: 'dashboard',
@@ -11,10 +13,9 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 
 export class DashboardComponent implements OnInit, OnDestroy {
-
-  games : Game[] = [];
-  gameAddedSubscription : Subscription;
-  gameRemovedSubscription : Subscription;
+  public games : Game[] = [];
+  public gameAddedSubscription : Subscription;
+  public gameRemovedSubscription : Subscription;
 
   constructor(private gameService: GameService) {
     this.gameAddedSubscription = this.gameService.gameAdded$.subscribe(() => {
@@ -25,37 +26,50 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   };
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.update();
   }
 
-  ngOnDestroy() : void {
+  public ngOnDestroy() : void {
     this.gameAddedSubscription.unsubscribe();
     this.gameRemovedSubscription.unsubscribe();
   }
 
-  update() : void {
+  public update() : void {
     console.log("updating list of games");
-    this.gameService.getGames().then(games => this.games = games);
+    this.gameService.getGames()
+      .then((games : Array<Game>) => {
+        console.log("successfully updated list of games");
+        this.games = games;
+      })
+      .catch((err : never) => console.log("error occured while updating list of games: %", err));
   }
 
-  download(game : Game) : void {
-    console.log("download game:", game.name);
-    this.gameService.download(game);
+  public download(game : Game) : void {
+    console.log("downloading game:", game.name);
+    this.gameService.download(game)
+      .then((game : Game) => console.log("successfully downloaded game: %", game.name))
+      .catch((err : never) => console.log("error occured while downloading game: %", err));
   }
 
-  launch(game : Game) : void {
-    console.log("launch game:", game.name);
-    this.gameService.launch(game);
+  public launch(game : Game) : void {
+    console.log("launching game:", game.name);
+    this.gameService.launch(game)
+      .then((game : Game) => console.log("successfully launched game: %", game.name))
+      .catch((err : never) => console.log("error occured while launching game: %", err));
   }
 
-  stop(game : Game) : void {
-    console.log("stop game:", game.name);
+  public stop(game : Game) : void {
+    console.log("stopping game:", game.name);
+    // TODO-FIXME
 
+    throw Error("stop game not implemented yet");
   }
 
-  remove(game : Game) : void {
-    console.log("delete game:", game.name);
-    this.gameService.remove(game);
+  public remove(game : Game) : void {
+    console.log("deleting game:", game.name);
+    this.gameService.remove(game)
+      .then((game : Game) => console.log("successfully removed game: %", game.name))
+      .catch((err : never) => console.log("error occured while removing game: %", err));
   }
 }

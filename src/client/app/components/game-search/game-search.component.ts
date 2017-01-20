@@ -6,14 +6,12 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
-import {GameService} from "../../shared/game/game.service";
-import {Game} from "../../shared/game/game";
+import { GameService } from "../../shared/game/game.service";
+import { Game } from "../../shared/game/game";
 
 @Component({
   selector: 'game-search',
@@ -22,14 +20,13 @@ import {Game} from "../../shared/game/game";
 })
 
 export class GameSearchComponent {
-
   public model: any;
-  searching = false;
-  searchFailed = false;
+  public searching : boolean = false;
+  public searchFailed : boolean = false;
 
   constructor(private gameService : GameService){};
 
-  search = (text$: Observable<string>) =>
+  public search = (text$: Observable<string>) =>
     text$
       .debounceTime(200)
       .distinctUntilChanged()
@@ -43,17 +40,13 @@ export class GameSearchComponent {
           }))
       .do(() => this.searching = false);
 
-  resultFormatter = (game: Game) => game.name;
+  public resultFormatter = (game: Game) => game.name;
 
-  inputFormatter = (game: Game) => game.name;
+  public inputFormatter = (game: Game) => game.name;
 
-  select = (game: Game) => console.log("selected:",game);
-
-  selectItem = (a) => console.log("selected:",a);
-
-  addGame = (game : Game) => {
+  public addGame(game : Game) : Promise<Game> {
     console.log("add game:", game.name);
 
-    this.gameService.add(game);
+    return this.gameService.add(game);
   }
 }

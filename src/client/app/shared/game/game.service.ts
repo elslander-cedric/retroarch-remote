@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Headers,Http,Request,Response,RequestOptions,RequestMethod} from "@angular/http";
+import {Headers,Http, Request, Response, RequestOptions,RequestMethod, Jsonp, URLSearchParams} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 
@@ -19,9 +19,9 @@ export class GameService {
   gameAdded$ = this.gameAddedSource.asObservable();
   gameRemoved$ = this.gameRemovedSource.asObservable();
 
-  constructor(private http: Http) {}
+  constructor(private http: Http, private jsonp : Jsonp) {}
 
-  getGames() : Promise<Game[]> {
+  public getGames() : Promise<Game[]> {
     const url = `${this.baseUrl}/list`;
 
     let headers = new Headers({
@@ -35,35 +35,46 @@ export class GameService {
       .catch(this.handleError)
   }
 
-  launch(game: Game) : void {
+  public launch(game: Game) : Promise<Game> {
     const url = `${this.baseUrl}/launch/?id=${game.id}`;
 
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
 
-    this.http
-      .get(url, { headers: headers })
+    let params = new URLSearchParams();
+    params.set('id', `${game.id}`);
+
+    let options = {
+      headers: headers,
+      search: params
+    };
+
+    return this.jsonp
+      .get(url, options)
       .toPromise()
-      .then()
+      .then(() => {
+        console.log("launched game %s", game.name);
+        return game;
+      })
       .catch(this.handleError);
   }
 
-  download(game: Game) : void {
+  public download(game: Game) : Promise<Game | any> {
     const url = `${this.baseUrl}/download/?id=${game.id}`;
 
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
 
-    this.http
+    return this.http
       .get(url, { headers: headers })
       .toPromise()
       .then()
       .catch(this.handleError);
   }
 
-  search(term: string): Observable<Game[]> {
+  public search(term: string): Observable<Game[]> {
     const url = `${this.baseUrl}/search/?name=${term}`;
 
     return this.http
@@ -72,7 +83,7 @@ export class GameService {
       .catch(this.handleError);
   }
 
-  add(game : Game) : void {
+  public add(game : Game) : Promise<Game | any> {
     const url = `${this.baseUrl}/add/`;
 
     let headers = new Headers({
@@ -86,35 +97,47 @@ export class GameService {
       body: JSON.stringify(game)
     });
 
-    this.http
+    return this.http
       .request(new Request(options))
       .toPromise()
       .then(() => {
         console.log("notify subscribers of gameAddedSource");
-        this.gameAddedSource.next();
+        this.gameAddedSource.next(game);
       })
       .catch(this.handleError);
-}
+  }
 
-  remove(game : Game) : void {
+  public remove(game : Game) : Promise<Game | any> {
     const url = `${this.baseUrl}/delete/?id=${game.id}`;
 
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
 
-    this.http
+    return this.http
       .get(url, { headers: headers })
       .toPromise()
       .then(() => {
         console.log("notify subscribers of gameRemovedSource");
-        this.gameRemovedSource.next();
+        this.gameRemovedSource.next(game);
       })
       .catch(this.handleError);
   }
 
-  private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+  private handleError(error: Response | any) : Promise<any> {
+    let errMsg: string;
+
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+
+    console.error(errMsg);
+
+    return Promise.reject(errMsg);
+    //return Observable.throw(errMsg);
   }
 }

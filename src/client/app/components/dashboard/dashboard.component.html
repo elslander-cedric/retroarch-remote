@@ -1,6 +1,6 @@
 <game-search></game-search>
 
-<div *ngFor="let game of games" fxLayout="column" style="padding-top: 10px">
+<div *ngFor="let game of games;trackBy:game?.id" fxLayout="column" style="padding-top: 10px">
   <md-card fxLayout="column">
     <div fxLayout="row">
       <md-card-header fxFlex>
@@ -35,3 +35,9 @@
     <md-card-content><div innerHTML="{{ game.summary }}"></div></md-card-content>
   </md-card>
 </div>
+
+<md2-dialog #confirm>
+    <md2-dialog-title>Confirm Title</md2-dialog-title>
+    Body Content...
+</md2-dialog>
+<button (click)="confirm.show()">Open Confirm Dialog</button>
