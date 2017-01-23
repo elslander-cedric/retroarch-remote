@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable }        from 'rxjs/Observable';
 import { Subject }           from 'rxjs/Subject';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -12,6 +13,7 @@ import 'rxjs/add/operator/switchMap';
 
 import { GameService } from "../../shared/game/game.service";
 import { Game } from "../../shared/game/game";
+import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 @Component({
   selector: 'game-search',
@@ -24,7 +26,11 @@ export class GameSearchComponent {
   public searching : boolean = false;
   public searchFailed : boolean = false;
 
-  constructor(private gameService : GameService){};
+  constructor(private gameService : GameService, private modalService: NgbModal){};
+
+  public resultFormatter = (game: Game) => game.name;
+
+  public inputFormatter = (game: Game) => game.name;
 
   public search = (text$: Observable<string>) =>
     text$
@@ -40,13 +46,22 @@ export class GameSearchComponent {
           }))
       .do(() => this.searching = false);
 
-  public resultFormatter = (game: Game) => game.name;
-
-  public inputFormatter = (game: Game) => game.name;
-
   public addGame(game : Game) : Promise<Game> {
     console.log("add game:", game.name);
 
-    return this.gameService.add(game);
+    return this.gameService
+      .add(game)
+      .then(() => console.log("successfully added game: %s", game.name))
+      .catch((err : never) => this.onUserError(`error occured while adding game: ${err}`));
+  }
+
+  public onUserError(error : string) : void {
+    console.log("open confirm modal");
+    const modalRef = this.modalService.open(ConfirmModalComponent);
+    modalRef.result
+      .then((result) => console.log("modal closed with result: %s", result))
+      .catch((result) => console.log("modal closed with error: %s", result));
+    modalRef.componentInstance.title = 'Game Search - Error occured';
+    modalRef.componentInstance.message = error;
   }
 }

@@ -15,13 +15,18 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { GameSearchComponent } from './components/game-search/game-search.component';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { GameService } from "./shared/game/game.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    GameSearchComponent
+    GameSearchComponent,
+    ConfirmModalComponent
+  ],
+  entryComponents: [
+    ConfirmModalComponent
   ],
   imports: [
     BrowserModule,

@@ -70,7 +70,7 @@ export class GameService {
     return this.http
       .get(url, { headers: headers })
       .toPromise()
-      .then()
+      .then(() => game)
       .catch(this.handleError);
   }
 
