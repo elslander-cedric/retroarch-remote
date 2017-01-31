@@ -18,11 +18,11 @@
           <md-icon>file_download</md-icon>
           <span>Download</span>
         </button>
-        <button md-menu-item disabled (click)="launch(game)">
+        <button md-menu-item [disabled]="!game.downloaded" (click)="launch(game)">
           <md-icon>launch</md-icon>
           <span>Start</span>
         </button>
-        <button md-menu-item disabled (click)="stop(game)">
+        <button md-menu-item [disabled]="!game.running" (click)="stop(game)">
           <md-icon>stop</md-icon>
           <span>Stop</span>
         </button>

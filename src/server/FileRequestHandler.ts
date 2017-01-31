@@ -1,38 +1,38 @@
-import {IncomingMessage,ServerResponse} from "http";
-import {RequestHandler} from "./RequestHandler";
+import { IncomingMessage, ServerResponse } from "http";
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 
+import { RequestHandler } from "./RequestHandler";
+
 export class FileRequestHandler implements RequestHandler {
 
-  private rootDir = '../../dist';
+  public preHandle(request: IncomingMessage, response: ServerResponse): void {
+    response.setHeader('Content-Type', 'text/html');
+  }
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
+    this.preHandle(request, response);
+
     var pathname = url.parse(request.url).pathname;
 
-    if (pathname === '/') {
-      pathname = '/index.html';
-    }
+    if (pathname === '/') { pathname = '/index.html'; }
 
-    fs.readFile(path.resolve(__dirname, this.rootDir + pathname), function (err, data) {
+    fs.readFile(path.resolve(__dirname, pathname), function (err, data) {
+      response.statusCode = err ? 404 : 200;
+
       if (err) {
-        console.log(err);
-        response.writeHead(404, {
-          'Content-Type': 'text/html',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        });
+        response.statusMessage = err.message;
       } else {
-        response.writeHead(200, {
-          'Content-Type': 'text/html',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        });
         response.write(data.toString());
       }
 
-      response.end();
+      this.postHandle(request, response);
     });
+  }
+
+  public postHandle(request: IncomingMessage, response: ServerResponse): void {
+    response.end();
   }
 }

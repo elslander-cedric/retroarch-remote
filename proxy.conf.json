@@ -1,0 +1,8 @@
+{
+  "/games": {
+    "target": {
+      "port": 1337
+    },
+    "secure": false
+  }
+}

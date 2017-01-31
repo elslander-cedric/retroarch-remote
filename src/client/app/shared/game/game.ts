@@ -3,11 +3,11 @@ export class Game {
   private _name: string;
   private _summary : string;
   private _description: string;
-  private _downloadUrl: string;
   private _image: string;
   private _platforms: string;
   private _rating : string;
   private _releasedate : string;
+  private _downloaded : boolean;
 
   get id() : number {
     return this._id;
@@ -40,13 +40,6 @@ export class Game {
   set description(description : string) {
     this._description = description;
   }
-  get downloadUrl() : string {
-    return this._downloadUrl;
-  }
-
-  set downloadUrl(downloadUrl : string) {
-    this._downloadUrl = downloadUrl;
-  }
 
   get image() : string {
     return this._image;
@@ -78,5 +71,13 @@ export class Game {
 
   set releasedate(releasedate : string) {
     this._releasedate = releasedate;
+  }
+
+  get downloaded() : boolean {
+    return this._downloaded;
+  }
+
+  set downloaded(downloaded : boolean) {
+    this._downloaded = downloaded;
   }
 }

@@ -1,18 +1,18 @@
-import {Injectable} from "@angular/core";
-import {Headers,Http, Request, Response, RequestOptions,RequestMethod, Jsonp, URLSearchParams} from "@angular/http";
+import { Injectable } from "@angular/core";
+import { Headers, Http, Request, Response, RequestOptions,RequestMethod, Jsonp, URLSearchParams } from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 
 import { Observable }     from 'rxjs';
 import { Subject }    from 'rxjs/Subject';
 
-import {Game} from "./game";
+import { Game } from "./game";
 
 @Injectable()
 export class GameService {
 
   //const gamesUrl = `http://${ location.host }:1337/games`;
-  private baseUrl : string = 'http://localhost:1337/games';
+  private baseUrl : string = '/games';
 
   private gameAddedSource = new Subject();
   private gameRemovedSource = new Subject();
@@ -124,15 +124,15 @@ export class GameService {
       .catch(this.handleError);
   }
 
-  private handleError(error: Response | any) : Promise<any> {
+  private handleError(response: Response | any) : Promise<any> {
     let errMsg: string;
 
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    if (response instanceof Response) {
+      const body = response.json() || '';
+      const errors = body.errors || JSON.stringify(body);
+      errMsg = `${response.status} - ${response.statusText || ''} ${errors.join(', ')}`;
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      errMsg = response.message ? response.message : response.toString();
     }
 
     console.error(errMsg);

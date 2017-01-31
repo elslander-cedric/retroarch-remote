@@ -3,13 +3,15 @@ import * as querystring from 'querystring';
 import * as xml2js from 'xml2js';
 import * as sync_request  from 'sync-request';
 
-import {Config} from "./Config";
-import {Game} from "./Game";
+import { Config } from "./Config";
+import { Game } from "./Game";
 
 export class GamesDbCachingService {
   private config : Config;
 
-  constructor() {}
+  constructor(config : Config) {
+      this.config = config;
+  }
 
   public search(name : string, callback) : void {
     // see http://stackoverflow.com/questions/22918573/giantbomb-api-work
@@ -17,7 +19,7 @@ export class GamesDbCachingService {
       hostname: 'www.giantbomb.com',
       port: 80,
       path: '/api/games/?' + querystring.stringify({
-        api_key: "85bdb63ad0b12e6b73bced553f5f6eddcf9792e6",
+        api_key: this.config.get("giantbombAPIKey"),
         limit: 10,
         format: "json",
         field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
@@ -34,15 +36,13 @@ export class GamesDbCachingService {
     http.request(options, (response) => {
       let responseBody = [];
 
-      console.log(`STATUS: ${response.statusCode}`);
+      // console.log(`STATUS: ${response.statusCode}`);
 
       response
       .on('data', (chunk) => {
-        console.log(`RESPONSE BODY CHUNK RECEIVED`);
         responseBody.push(chunk);
       })
       .on('end', () => {
-        console.log(`RESPONSE BODY END`);
         let jsonResponse = JSON.parse(Buffer.concat(responseBody).toString());
 
         if(jsonResponse.status_code === 1) { // OK
@@ -59,14 +59,5 @@ export class GamesDbCachingService {
     }).on('error', (e) => {
       console.log(`problem with request: ${e.message}`);
     }).end();
-  }
-
-  public init(config : Config) : void {
-    this.config = config;
-  }
-
-  public getGame(game : Game) : void {
-
-
   }
 }

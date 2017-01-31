@@ -1,17 +1,17 @@
-
+import * as fs from 'fs';
 
 export class Config {
 
-  private configMap = {
-    // TODO-FIXME: get from file
-    giantbombAPIKey: '85bdb63ad0b12e6b73bced553f5f6eddcf9792e6&format',
-    giantbompBaseUrl: 'http://www.giantbomb.com/api/'
-  };
+  private config : Object;
 
   constructor() {}
 
-  public get(name : string) : any {
-    return this.configMap[name];
+  public init() : Config {
+    this.config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
+    return this;
   }
 
+  public get(name : string) : any {
+    return this.config[name];
+  }
 }

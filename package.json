@@ -6,8 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
-    "start-server": "nodemon --wah 'src/server/**/*.ts' --ignore 'src/server/**/*.spec.ts' --exec ts-node -- src/server/Server.ts",
-    "start-client": "ng serve",
+    "start-server": "nodemon --watch 'src/server/' --ignore 'src/server/**/*.spec.ts' --exec ts-node -- src/server/Server.ts",
+    "start-client": "ng serve --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
     "pree2e": "webdriver-manager update --standalone false --gecko false",
@@ -15,19 +15,21 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^2.3.1",
-    "@angular/compiler": "^2.3.1",
-    "@angular/core": "^2.3.1",
-    "@angular/flex-layout": "^2.0.0-beta.1",
-    "@angular/forms": "^2.3.1",
-    "@angular/http": "^2.3.1",
+    "@angular/common": "^2.4.4",
+    "@angular/compiler": "^2.4.4",
+    "@angular/compiler-cli": "^2.4.4",
+    "@angular/core": "^2.4.4",
+    "@angular/flex-layout": "^2.0.0-beta.3",
+    "@angular/forms": "^2.4.4",
+    "@angular/http": "^2.4.4",
     "@angular/material": "^2.0.0-beta.1",
-    "@angular/platform-browser": "^2.3.1",
-    "@angular/platform-browser-dynamic": "^2.3.1",
-    "@angular/router": "^3.3.1",
+    "@angular/platform-browser": "^2.4.4",
+    "@angular/platform-browser-dynamic": "^2.4.4",
+    "@angular/router": "^3.4.4",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.18",
-    "@types/jasmine": "^2.5.40",
-    "@types/node": "^6.0.60",
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^6.0.61",
+    "bluebird": "^3.4.7",
     "bootstrap": "^4.0.0-alpha.6",
     "core-js": "^2.4.1",
     "md2": "0.0.13",
@@ -37,7 +39,7 @@
     "ts-helpers": "^1.1.1",
     "unzip": "^0.1.11",
     "xml2js": "^0.4.17",
-    "zone.js": "^0.7.4"
+    "zone.js": "^0.7.6"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^2.3.1",
@@ -55,6 +57,7 @@
     "protractor": "~4.0.13",
     "ts-node": "^1.2.1",
     "tslint": "^4.0.2",
-    "typescript": "^2.0.10"
+    "typescript": "^2.0.10",
+    "webpack": "^2.2.0"
   }
 }
