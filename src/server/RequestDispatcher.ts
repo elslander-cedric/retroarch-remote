@@ -18,19 +18,17 @@ export class RequestDispatcher {
 
   constructor(localGamesDb : LocalGamesDb, gamesDbCachingService : GamesDbCachingService) {
     this.requestProcessor = new RequestProcessor()
+      .addHandler('/', new FileRequestHandler())
       .addHandler('/games/list/', new GameListRequestHandler(localGamesDb))
       .addHandler('/games/download/', new GameDownloadRequestHandler(localGamesDb))
       .addHandler('/games/launch/', new GameLaunchRequestHandler(localGamesDb))
       .addHandler('/games/search/', new GameSearchRequestHandler(gamesDbCachingService))
       .addHandler('/games/add/', new GameAddRequestHandler(localGamesDb))
-      .addHandler('/games/delete/', new GameDeleteRequestHandler(localGamesDb))
-      .addHandler('/', new FileRequestHandler());
+      .addHandler('/games/delete/', new GameDeleteRequestHandler(localGamesDb));
   };
 
   public dispatch(request: IncomingMessage, response: ServerResponse) {
     var pathname = url.parse(request.url).pathname;
-
-    console.log("dispatch ", pathname);
 
     this.requestProcessor
       .getHandler(pathname)

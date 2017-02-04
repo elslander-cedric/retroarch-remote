@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { MaterialModule } from '@angular/material';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subscription }   from 'rxjs/Subscription';
-
 import { GameService } from "../../shared/game/game.service";
 import { Game } from "../../shared/game/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
@@ -16,25 +14,16 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 export class DashboardComponent implements OnInit, OnDestroy {
   public games : Game[] = [];
-  public gameAddedSubscription : Subscription;
-  public gameRemovedSubscription : Subscription;
 
-  constructor(private gameService: GameService, private modalService: NgbModal) {
-    this.gameAddedSubscription = this.gameService.gameAdded$.subscribe(() => {
-      this.update();
-    });
-    this.gameRemovedSubscription = this.gameService.gameRemoved$.subscribe(() => {
-      this.update();
-    });
-  };
+  constructor(private gameService: GameService, private modalService: NgbModal) {};
 
   public ngOnInit(): void {
+    this.gameService.subscribe(this, () => { this.update(); });
     this.update();
   }
 
   public ngOnDestroy() : void {
-    this.gameAddedSubscription.unsubscribe();
-    this.gameRemovedSubscription.unsubscribe();
+    this.gameService.unsubscribe(this);
   }
 
   public update() : void {
@@ -68,7 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public remove(game : Game) : void {
-    console.log("deleting game:", game.name);
+    console.log("removing game:", game.name);
     this.gameService.remove(game)
       .then(() => console.log("successfully removed game: %s", game.name))
       .catch((err : never) => this.onUserError(`error occured while removing game: ${err}`));

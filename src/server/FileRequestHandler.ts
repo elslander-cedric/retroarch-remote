@@ -8,6 +8,8 @@ import { RequestHandler } from "./RequestHandler";
 
 export class FileRequestHandler implements RequestHandler {
 
+  constructor() {};
+
   public preHandle(request: IncomingMessage, response: ServerResponse): void {
     response.setHeader('Content-Type', 'text/html');
   }

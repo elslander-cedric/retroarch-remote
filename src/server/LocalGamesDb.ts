@@ -109,8 +109,11 @@ export class LocalGamesDb {
 
     return new Promise((onSuccess, onError) => {
       child_process.exec(command, (error, stdout, stderr) => {
-        if (error) throw error;
-        onSuccess(`stdout: ${stdout}`);
+        if (error) {
+          onError(`${error} - stderr: ${stderr}`);
+        } else {
+          onSuccess(`stdout: ${stdout}`);
+        }
       });
     });
   }

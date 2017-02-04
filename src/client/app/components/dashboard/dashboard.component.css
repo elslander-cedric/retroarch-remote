@@ -1,10 +1,9 @@
-md-card-header {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  /*text-overflow: ellipsis;*/
+md-card-content {
+  padding-top: 10pt;
 }
 
-md-card-subbtitle {
-  /*margin-bottom: 10pt;*/
+md-card-subtitle div, md-card-title div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

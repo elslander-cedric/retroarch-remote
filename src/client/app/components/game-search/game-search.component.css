@@ -1,12 +1,26 @@
-.form-control {
+.form-control {}
 
-}
 .form-group {
-
+  justify-content: center;
+  margin: auto;
 }
-.game-search-container {
 
+.game-search-item-platform, .game-search-item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+.game-search-item-container {
+  width: 250px;
+  margin-right: 20px;
+}
+
+.game-search-item-description {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .game-search-spinner {
   position: absolute;
   margin: auto;
@@ -15,16 +29,4 @@
   left: 0;
   right: 0;
   z-index: 5;
-}
-.game-search-item-container {
-  height:10%;
-  width:100%;
-}
-.game-search-item-platforms {
-  font-size: 10pt;
-}
-.game-search-item-icon {
-  width:auto;
-  height:100%;
-  padding-right: 10pt;
 }

@@ -1,6 +1,5 @@
 import * as http from 'http';
 import * as querystring from 'querystring';
-import * as xml2js from 'xml2js';
 import * as sync_request  from 'sync-request';
 
 import { Config } from "./Config";
@@ -36,8 +35,6 @@ export class GamesDbCachingService {
     http.request(options, (response) => {
       let responseBody = [];
 
-      // console.log(`STATUS: ${response.statusCode}`);
-
       response
       .on('data', (chunk) => {
         responseBody.push(chunk);
@@ -46,7 +43,6 @@ export class GamesDbCachingService {
         let jsonResponse = JSON.parse(Buffer.concat(responseBody).toString());
 
         if(jsonResponse.status_code === 1) { // OK
-          console.log('Found ' + jsonResponse.number_of_total_results + ' results for ' + name);
           callback(jsonResponse.results);
         } else {
           console.log(`error with request: ${jsonResponse.error}`);

@@ -3,7 +3,7 @@ import './rxjs-extensions';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule, JsonpModule, RequestOptions } from '@angular/http';
 import { MaterialModule } from '@angular/material';
 //import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { GameSearchComponent } from './components/game-search/game-search.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
-import { GameService } from "./shared/game/game.service";
+import { GameService, DefaultRequestOptions } from "./shared/game/game.service";
 
 @NgModule({
   declarations: [
@@ -38,7 +38,7 @@ import { GameService } from "./shared/game/game.service";
     Md2Module.forRoot(),
     NgbModule.forRoot()
   ],
-  providers: [GameService /*, Location, {provide: LocationStrategy, useClass: PathLocationStrategy}*/],
+  providers: [GameService, { provide: RequestOptions, useClass: DefaultRequestOptions} /*, Location, {provide: LocationStrategy, useClass: PathLocationStrategy}*/],
   bootstrap: [AppComponent]
 })
 

@@ -38,7 +38,6 @@
     "sync-request": "^3.0.1",
     "ts-helpers": "^1.1.1",
     "unzip": "^0.1.11",
-    "xml2js": "^0.4.17",
     "zone.js": "^0.7.6"
   },
   "devDependencies": {

@@ -11,12 +11,8 @@ export class RequestProcessor {
   }
 
   public getHandler(path : string) : RequestHandler {
-    console.log("get handler for %s", path);
-
-    return this.handlers.filter((handlerDescriptor) => {
-      return handlerDescriptor.path.indexOf(path) === 0;
-    }).reduce((accumulator, currentValue) => {
-      return accumulator.path.length < currentValue.path.length ? accumulator : currentValue;
+    return this.handlers.reduce((accumulator, currentValue) => {
+      return (currentValue.path === path ? currentValue : accumulator);
     }).handler;
   }
 }

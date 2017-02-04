@@ -26,6 +26,10 @@ export class GameLaunchRequestHandler extends JsonRequestHandler {
       .then((game: Game) => {
         response.statusCode = 200; // ok
         this.postHandle(request, response);
+      }, (err) => {
+        response.statusCode = 400; // bad request
+        response.write(JSON.stringify({ errors: [err] }));
+        this.postHandle(request, response);
       })
       .catch((err) => {
         response.statusCode = 500; // internal server error

@@ -19,10 +19,7 @@ export class GameSearchRequestHandler extends JsonRequestHandler {
     let requestUrl : Url = url.parse(request.url, true);
     let name = requestUrl.query['name'];
 
-    console.log("search games for:", name);
     let games = this.gamesDbCachingService.search(name, (games) => {
-      console.log("returning %s games", games.length);
-
       response.statusCode = 200;
 
       response.write(JSON.stringify({

@@ -1,5 +1,5 @@
 <md-toolbar [ngClass]="['md-primary','md-hue-3','game-search-container']">
-  <div class="form-group" [class.has-danger]="searchFailed">
+  <div class="form-group" [class.has-danger]="searchFailed" fxLayout="column" fxFlex="100%">
     <input
       type="text"
       class="form-control"
@@ -11,16 +11,16 @@
       [inputFormatter]="inputFormatter"
       [resultFormatter]="resultFormatter"
       [resultTemplate]="gameMatchTemplate"/>
-    <div class="form-control-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
   </div>
+  <div class="form-control-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
 </md-toolbar>
 
 <template #gameMatchTemplate let-r="result" let-t="term">
-  <div [ngClass]="['game-search-item-container']" fxLayout="row">
-    <img [ngClass]="['game-search-item-icon']" [src]="r.image">
-    <div fxLayout="column" fxFlex>
-      <div>{{ r.name }}</div>
-      <div [ngClass]="['game-search-item-platforms']">{{ r.platforms }}</div>
+  <div [ngClass]="['game-search-item-container']" fxFlex="100%" fxLayout="row" fxLayoutAlign="start start end">
+    <img [src]="r.image" fxFlex="20%">
+    <div [ngClass]="['game-search-item-description']" fxLayout="column" fxFlex="75%">
+      <div [ngClass]="['game-search-item-title']">{{ r.name }}</div>
+      <div [ngClass]="['game-search-item-platform']">{{ r.platforms }}</div>
     </div>
     <button md-mini-fab class="md-primary" (click)="addGame(r)">
       <md-icon class="md-18">add</md-icon>
