@@ -32,7 +32,17 @@ export class GameService {
   }
 
   public getGames() : Promise<Game[]> {
-    const url = `${this.baseUrl}/list`;
+    const url = `${this.baseUrl}/list/`;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json().data as Game[])
+      .catch(this.handleError)
+  }
+
+  public getTopRated() : Promise<Game[]> {
+    const url = `${this.baseUrl}/top-rated/`;
 
     return this.http
       .get(url)

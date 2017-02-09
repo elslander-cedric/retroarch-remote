@@ -21,7 +21,11 @@ export class FileRequestHandler implements RequestHandler {
 
     if (pathname === '/') { pathname = '/index.html'; }
 
-    fs.readFile(path.resolve(__dirname, pathname), function (err, data) {
+    // TODO-FIXME
+    console.log(path.resolve(__dirname, pathname));
+    pathname = pathname.slice(1);
+    fs.readFile(pathname, {}, (err, data) => {
+    // fs.readFile(path.resolve(__dirname, pathname), {}, (err, data) => {
       response.statusCode = err ? 404 : 200;
 
       if (err) {

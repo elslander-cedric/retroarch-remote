@@ -1,0 +1,11 @@
+<br>
+
+<md-toolbar>
+  <h3>Top Rated</h3>
+</md-toolbar>
+
+<carousel>
+  <carousel-slide *ngFor="let game of games;trackBy:game?.rating" [image]="game.image"></carousel-slide>
+</carousel>
+
+<br>

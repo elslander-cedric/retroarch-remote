@@ -36,39 +36,5 @@
   <md-card-content>{{ game.summary }}</md-card-content>
 </md-card>
 
-
-<!-- <div *ngFor="let game of games;trackBy:game?.id" fxLayout="column" style="padding-top: 10px">
-  <md-card fxLayout="column">
-    <div fxLayout="row">
-      <md-card-header fxFlex>
-        <img md-card-avatar src="{{ game.image }}">
-        <md-card-title>{{ game.name }}</md-card-title>
-        <md-card-subtitle>{{ game.platforms }}</md-card-subtitle>
-      </md-card-header>
-
-      <button md-icon-button [mdMenuTriggerFor]="menu">
-        <md-icon>more_vert</md-icon>
-      </button>
-
-      <md-menu #menu="mdMenu">
-        <button md-menu-item (click)="download(game)">
-          <md-icon>file_download</md-icon>
-          <span>Download</span>
-        </button>
-        <button md-menu-item [disabled]="!game.downloaded" (click)="launch(game)">
-          <md-icon>launch</md-icon>
-          <span>Start</span>
-        </button>
-        <button md-menu-item [disabled]="!game.running" (click)="stop(game)">
-          <md-icon>stop</md-icon>
-          <span>Stop</span>
-        </button>
-        <button md-menu-item (click)="remove(game)">
-          <md-icon>delete</md-icon>
-          <span>Delete</span>
-        </button>
-      </md-menu>
-    </div>
-    <md-card-content><div innerHTML="{{ game.summary }}"></div></md-card-content>
-  </md-card>
-</div> -->
+<top-rated></top-rated>
+<suggestions></suggestions>

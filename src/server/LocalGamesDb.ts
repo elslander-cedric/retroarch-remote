@@ -1,6 +1,8 @@
 // import { Observable } from 'rxjs/Observable';
 import { Promise } from 'bluebird';
 
+import * as bluebird from 'bluebird';
+
 import * as fs from 'fs';
 import * as http from "http";
 import * as unzip from 'unzip';
@@ -69,6 +71,8 @@ export class LocalGamesDb {
     console.log("download game: %s", game.name);
 
     let pathArchive = path.resolve(this.config.get("downloadDir"), `${game.id}.zip`);
+    let pathGame = path.resolve(this.config.get("downloadDir"), `${game.id}`);
+
     let _game = this.config.get('downloadUrls').find(_game => _game.id === game.id);
 
     if(game.downloaded) return Promise.reject("game was already downloaded");
@@ -84,7 +88,18 @@ export class LocalGamesDb {
 
           fs.createReadStream(pathArchive)
             .on('error', (err) => { onError(err) })
-            .pipe(unzip.Extract({ path: this.config.get('downloadDir') }))
+            //.pipe(unzip.Extract({ path: this.config.get('downloadDir') }))
+            .pipe(unzip.Parse())
+            .on('entry', function (entry) {
+              var fileName = entry.path;
+              var type = entry.type; // 'Directory' or 'File'
+              var size = entry.size;
+              if (type === "File") {
+                entry.pipe(fs.createWriteStream(pathGame));
+              } else {
+                entry.autodrain();
+              }
+            })
             .on('finish', () => {
               console.log("game extracted");
               game.downloaded = true;
@@ -104,8 +119,22 @@ export class LocalGamesDb {
   public launchGame(game : Game) : Promise<any|void> {
     console.log("launch game: %s", game.name);
 
-    let pathGame = path.resolve(this.config.get("downloadDir"), `${game.name}.nes`);
-    let command = `/usr/bin/retroarch -L /usr/lib/libretro.so ${pathGame}`;
+    return this.stopKodi()
+      .then(() => {
+        console.log('stopping kodi ok');
+        setTimeout(() => { this.startRetroArch(game); }, 5000);
+      },(error) => {
+        console.log('stopping kodi error %s', error);
+        setTimeout(() => { this.startRetroArch(game); }, 5000);
+      })
+      .catch((e) => { console.log('catch kodi error %s', e); });
+  }
+
+  private startRetroArch(game : Game) : Promise<any|void> {
+    let pathGame = path.resolve(this.config.get("downloadDir"), `*${game.id}*`);
+    let command = `xinit /usr/bin/retroarch -L /usr/lib/libretro/nestopia_libretro.so ${pathGame}`;
+
+    console.log('run %s', command);
 
     return new Promise((onSuccess, onError) => {
       child_process.exec(command, (error, stdout, stderr) => {
@@ -115,6 +144,45 @@ export class LocalGamesDb {
           onSuccess(`stdout: ${stdout}`);
         }
       });
+    });
+  }
+
+  private stopKodi() : Promise<any|void> {
+    console.log('stopping kodi');
+
+    return new Promise((onSuccess, onError) => {
+      let options = {
+        hostname: 'localhost',
+        port: 8084,
+        path: '/jsonrpc',
+        method: 'POST',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+          'Content-Type': 'application/json'
+        },
+        auth: 'xbmc:xbmc'
+      };
+
+      let request = http.request(options, (response) => {
+        response
+        .on('data', () => {})
+        .on('end', () => {
+          console.log('stopping kodi ok');
+          onSuccess();
+        })
+        .on('error', (e) => {
+          console.log('stopping kodi error');
+          onError(`problem with response: ${e.message}`);
+        });
+
+      }).on('error', (e) => {
+        console.log('stopping kodi error');
+        onError(`problem with request: ${e.message}`);
+      })
+
+      request.write(JSON.stringify({ jsonrpc: "2.0", method: "Application.Quit", id: 1} ));
+      request.end();
+
     });
   }
 }
