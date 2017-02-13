@@ -14,7 +14,7 @@
       <md-icon>more_vert</md-icon>
     </button>
 
-    <md-menu #menu="mdMenu">
+    <md-menu x-position="before" y-position="below" #menu="mdMenu">
       <button md-menu-item (click)="download(game)">
         <md-icon>file_download</md-icon>
         <span>Download</span>
@@ -23,7 +23,7 @@
         <md-icon>launch</md-icon>
         <span>Start</span>
       </button>
-      <button md-menu-item [disabled]="!game.running" (click)="stop(game)">
+      <button md-menu-item (click)="stop(game)">
         <md-icon>stop</md-icon>
         <span>Stop</span>
       </button>

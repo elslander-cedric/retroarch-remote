@@ -7,7 +7,7 @@ import { Observable }     from 'rxjs';
 import { Subject }    from 'rxjs/Subject';
 import { Subscription }   from 'rxjs/Subscription';
 
-import { Game } from "./game";
+import { Game } from "../shared/game";
 
 export class DefaultRequestOptions extends BaseRequestOptions {
   headers : Headers = new Headers({ 'Content-Type': 'application/json' });
@@ -65,7 +65,31 @@ export class GameService {
     return this.http
       .get(url, options)
       .toPromise()
-      .then(() => game)
+      .then(() => {
+        this.eventEmitter.next(game);
+        return game;
+      })
+      .catch(this.handleError);
+  }
+
+  public stop(game: Game) : Promise<Game> {
+    const url = `${this.baseUrl}/stop/`;
+
+    let params = new URLSearchParams();
+    params.set('id', `${game.id}`);
+
+    let options = new RequestOptions({
+      search: params
+    });
+
+    // return this.jsonp => jsonp doesn't send http header content-type :(
+    return this.http
+      .get(url, options)
+      .toPromise()
+      .then(() => {
+        this.eventEmitter.next(game);
+        return game;
+      })
       .catch(this.handleError);
   }
 

@@ -1,14 +1,14 @@
 // import { Observable } from 'rxjs/Observable';
 import { Promise } from 'bluebird';
-
-import * as bluebird from 'bluebird';
+import { ChildProcess } from 'child_process';
 
 import * as fs from 'fs';
 import * as http from "http";
 import * as unzip from 'unzip';
 import * as request from 'request';
 import * as path from 'path';
-import * as child_process from  'child_process';
+import * as child_process from 'child_process';
+import * as bluebird from 'bluebird';
 
 import { Game } from "./Game";
 import { Config } from "./Config";
@@ -18,6 +18,8 @@ export class LocalGamesDb {
 
   private games : Array<Game> = [];
   private config : Config;
+  private retroarch : ChildProcess;
+  private kodi : ChildProcess;
 
   constructor(config : Config) {
     this.config = config;
@@ -116,33 +118,105 @@ export class LocalGamesDb {
     });
   }
 
+  public stopGame(game : Game) : Promise<any|void> {
+    console.log("stop game: %s", game.name);
+
+    // if(!game.running) return Promise.reject("game was not running");
+
+    return this.stopRetroArch()
+      .delay(5000)
+      .then(() => {
+        console.log('stopping retroarch ok');
+        this.startKodi();
+      },(error) => {
+        console.log('stopping reroarch error %s', error);
+        this.startKodi();
+      })
+      .catch((e) => { console.log('catch kodi error %s', e); });
+  }
+
   public launchGame(game : Game) : Promise<any|void> {
     console.log("launch game: %s", game.name);
 
+    if(game.running) return Promise.reject("game was already running");
+
     return this.stopKodi()
+      .delay(5000)
       .then(() => {
         console.log('stopping kodi ok');
-        setTimeout(() => { this.startRetroArch(game); }, 5000);
+        this.startRetroArch(game);
       },(error) => {
         console.log('stopping kodi error %s', error);
-        setTimeout(() => { this.startRetroArch(game); }, 5000);
+        this.startRetroArch(game);
       })
       .catch((e) => { console.log('catch kodi error %s', e); });
   }
 
   private startRetroArch(game : Game) : Promise<any|void> {
-    let pathGame = path.resolve(this.config.get("downloadDir"), `*${game.id}*`);
+    let pathGame = path.resolve(this.config.get("downloadDir"), `${game.id}`);
     let command = `xinit /usr/bin/retroarch -L /usr/lib/libretro/nestopia_libretro.so ${pathGame}`;
 
     console.log('run %s', command);
 
     return new Promise((onSuccess, onError) => {
-      child_process.exec(command, (error, stdout, stderr) => {
+      // this.retroarch = child_process.exec(command, (error, stdout, stderr) => {
+      //   if (error) {
+      //     onError(`${error} - stderr: ${stderr}`);
+      //   } else {
+      //     onSuccess(`stdout: ${stdout}`);
+      //   }
+      // }).on('close', (code, signal) => {
+      //   console.log(`retroarch terminated with code ${code} due to receipt of signal ${signal}`);
+      // });
+
+      this.retroarch = child_process.spawn('xinit', [
+        '/usr/bin/retroarch',
+        '-L', '/usr/lib/libretro/nestopia_libretro.so',
+        pathGame], {stdio: "inherit"});
+
+      // this.retroarch.stdout.on('data', (data) => {
+      //   console.log(`retroarch stdout: ${data}`);
+      // });
+      //
+      // this.retroarch.stderr.on('data', (data) => {
+      //   console.log(`retroarch stderr: ${data}`);
+      // });
+      //
+      // this.retroarch.on('close', (code) => {
+      //   console.log(`retroarch exited with code ${code}`);
+      // });
+
+      onSuccess();
+    });
+  }
+
+  private stopRetroArch() : Promise<any|void> {
+    if(this.retroarch == null) {
+      return Promise.reject("retroarch is not running");
+    }
+
+    return new Promise((onSuccess, onError) => {
+      console.log("killing retroarch with pid: %s", this.retroarch.pid);
+      this.retroarch.kill(); // will not kill children of my children
+      this.retroarch = null;
+      onSuccess();
+    });
+  }
+
+  private startKodi() : Promise<any|void> {
+    let command = `xinit /usr/bin/xbmc -nocursor :0`;
+
+    console.log('run %s', command);
+
+    return new Promise((onSuccess, onError) => {
+      this.kodi = child_process.exec(command, (error, stdout, stderr) => {
         if (error) {
           onError(`${error} - stderr: ${stderr}`);
         } else {
           onSuccess(`stdout: ${stdout}`);
         }
+      }).on('close', (code, signal) => {
+        console.log(`kodi terminated with code ${code} due to receipt of signal ${signal}`);
       });
     });
   }

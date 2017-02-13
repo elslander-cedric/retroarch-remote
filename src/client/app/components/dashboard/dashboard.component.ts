@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { MaterialModule } from '@angular/material';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { GameService } from "../../shared/game/game.service";
-import { Game } from "../../shared/game/game";
+import { GameService } from "../../services/game.service";
+import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 @Component({
@@ -52,8 +52,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   public stop(game : Game) : void {
     console.log("stopping game:", game.name);
-    // TODO-FIXME
-    throw Error("stop game not implemented yet");
+    this.gameService.stop(game)
+      .then((_game : Game) => console.log("successfully stopped game: %s", _game.name))
+      .catch((err : never) => this.onUserError(`error occured while stopping game: ${err}`));
   }
 
   public remove(game : Game) : void {

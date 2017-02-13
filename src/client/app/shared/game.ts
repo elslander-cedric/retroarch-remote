@@ -8,6 +8,7 @@ export class Game {
   private _rating : string;
   private _releasedate : string;
   private _downloaded : boolean;
+  private _running : boolean;
 
   get id() : number {
     return this._id;
@@ -79,5 +80,13 @@ export class Game {
 
   set downloaded(downloaded : boolean) {
     this._downloaded = downloaded;
+  }
+
+  get running() : boolean {
+    return this._running;
+  }
+
+  set running(running : boolean) {
+    this._running = running;
   }
 }

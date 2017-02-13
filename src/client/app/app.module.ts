@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule, RequestOptions } from '@angular/http';
 import { MaterialModule } from '@angular/material';
-//import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import {} from 'hammer.js';
@@ -20,7 +19,7 @@ import { SuggestionsComponent } from './components/suggestions/suggestions.compo
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { CarouselSlideComponent } from './components/carousel-slide/carousel-slide.component';
-import { GameService, DefaultRequestOptions } from "./shared/game/game.service";
+import { GameService, DefaultRequestOptions } from "./services/game.service";
 import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig";
 
 @NgModule({
@@ -43,17 +42,21 @@ import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig"
     HttpModule,
     JsonpModule,
     MaterialModule.forRoot(),
-    FlexLayoutModule.forRoot(),
+    FlexLayoutModule,
     Md2Module.forRoot(),
     NgbModule.forRoot()
   ],
-  providers: [GameService, {
-    provide: RequestOptions,
-    useClass: DefaultRequestOptions
-  }, {
-    provide: HAMMER_GESTURE_CONFIG,
-    useClass: DefaultHammerGestureConfig
-  } /*, Location, {provide: LocationStrategy, useClass: PathLocationStrategy}*/],
+  providers: [
+    GameService,
+    {
+      provide: RequestOptions,
+      useClass: DefaultRequestOptions
+    },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: DefaultHammerGestureConfig
+    }
+  ],
   bootstrap: [AppComponent]
 })
 

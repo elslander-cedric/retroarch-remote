@@ -2,8 +2,8 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MaterialModule } from '@angular/material';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { GameService } from "../../shared/game/game.service";
-import { Game } from "../../shared/game/game";
+import { GameService } from "../../services/game.service";
+import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 import { CarouselComponent } from "../carousel/carousel.component";
 

@@ -11,8 +11,8 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
-import { GameService } from "../../shared/game/game.service";
-import { Game } from "../../shared/game/game";
+import { GameService } from "../../services/game.service";
+import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 @Component({

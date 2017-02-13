@@ -7,6 +7,7 @@ import { GameListRequestHandler } from "./GameListRequestHandler";
 import { GameTopRatedRequestHandler } from "./GameTopRatedRequestHandler";
 import { GameDownloadRequestHandler } from "./GameDownloadRequestHandler";
 import { GameLaunchRequestHandler } from "./GameLaunchRequestHandler";
+import { GameStopRequestHandler } from "./GameStopRequestHandler";
 import { GameSearchRequestHandler } from "./GameSearchRequestHandler";
 import { GameAddRequestHandler } from "./GameAddRequestHandler";
 import { GameDeleteRequestHandler } from "./GameDeleteRequestHandler";
@@ -24,6 +25,7 @@ export class RequestDispatcher {
       .addHandler('/games/top-rated/', new GameTopRatedRequestHandler(gamesDbCachingService))
       .addHandler('/games/download/', new GameDownloadRequestHandler(localGamesDb))
       .addHandler('/games/launch/', new GameLaunchRequestHandler(localGamesDb))
+      .addHandler('/games/stop/', new GameStopRequestHandler(localGamesDb))
       .addHandler('/games/search/', new GameSearchRequestHandler(gamesDbCachingService))
       .addHandler('/games/add/', new GameAddRequestHandler(localGamesDb))
       .addHandler('/games/delete/', new GameDeleteRequestHandler(localGamesDb));
