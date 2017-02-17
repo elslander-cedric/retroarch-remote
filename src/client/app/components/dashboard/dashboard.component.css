@@ -1,5 +1,10 @@
+md-card {
+  /*padding-bottom: 50px;*/
+  margin: 20px 10px 20px 10px;
+}
+
 md-card-content {
-  padding-top: 10pt;
+  padding-top: 20px;
 }
 
 md-card-subtitle div, md-card-title div {

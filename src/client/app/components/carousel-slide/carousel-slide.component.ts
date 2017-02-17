@@ -1,4 +1,10 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, Renderer } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  Input,
+  ElementRef,
+  Renderer } from '@angular/core';
 
 @Component({
   selector: 'carousel-slide',
@@ -15,15 +21,31 @@ export class CarouselSlideComponent implements OnInit, AfterViewInit {
 
   public ngOnInit() {}
 
-  public ngAfterViewInit() {
-    // this.positionX = this.el.nativeElement.style.left;
-  }
+  public ngAfterViewInit() {}
 
   public setOffsetX(offsetX : number) : void {
-    this.offsetX = this.positionX + offsetX;
+    if(this.positionX + offsetX >= 0) {
+      this.offsetX = 0;
+    } else {
+      this.offsetX = this.positionX + offsetX;
+    }
   }
 
   public setPositionX(offsetX : number) : void {
-    this.positionX = this.positionX + offsetX;
+    console.log(this.positionX + offsetX + " vs " + this.el.nativeElement.offsetLeft);
+
+    // this.el.nativeElement.offsetWidth => 100
+    // this.el.nativeElement.offsetLeft => 4900
+    // this.el.nativeElement.clientWidth => 100
+
+    if(this.positionX + offsetX >= 0) {
+      this.positionX = 0;
+    } else {
+      this.positionX = this.positionX + offsetX;
+    }
+  }
+
+  public animate(velocityX : number) : void {
+    //this.offsetX = this.positionX + (velocityX * 100);
   }
 }

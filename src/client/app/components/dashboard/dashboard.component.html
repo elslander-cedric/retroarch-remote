@@ -19,7 +19,8 @@
         <md-icon>file_download</md-icon>
         <span>Download</span>
       </button>
-      <button md-menu-item [disabled]="!game.downloaded" (click)="launch(game)">
+      <!-- <button md-menu-item [disabled]="!game.downloaded" (click)="launch(game)"> -->
+      <button md-menu-item (click)="launch(game)">
         <md-icon>launch</md-icon>
         <span>Start</span>
       </button>
@@ -36,5 +37,7 @@
   <md-card-content>{{ game.summary }}</md-card-content>
 </md-card>
 
+<br/>
 <top-rated></top-rated>
 <suggestions></suggestions>
+<available></available>

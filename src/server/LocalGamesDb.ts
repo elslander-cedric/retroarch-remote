@@ -77,7 +77,8 @@ export class LocalGamesDb {
 
     let _game = this.config.get('downloadUrls').find(_game => _game.id === game.id);
 
-    if(game.downloaded) return Promise.reject("game was already downloaded");
+    // if(game.downloaded) return Promise.reject("game was already downloaded");
+    if(fs.existsSync(pathGame)) return Promise.reject("game was already downloaded");
     if(!_game) return Promise.reject("no download available for that game");
 
     return new Promise((onSuccess, onError) => {
@@ -90,7 +91,7 @@ export class LocalGamesDb {
 
           fs.createReadStream(pathArchive)
             .on('error', (err) => { onError(err) })
-            //.pipe(unzip.Extract({ path: this.config.get('downloadDir') }))
+            // .pipe(unzip.Extract({ path: this.config.get('downloadDir') }))
             .pipe(unzip.Parse())
             .on('entry', function (entry) {
               var fileName = entry.path;
@@ -106,6 +107,7 @@ export class LocalGamesDb {
               console.log("game extracted");
               game.downloaded = true;
 
+              // onSuccess(game);
               fs.unlink(pathArchive, (err) => {
                 if(err) {
                   onError("could not remove archive");
@@ -124,7 +126,7 @@ export class LocalGamesDb {
     // if(!game.running) return Promise.reject("game was not running");
 
     return this.stopRetroArch()
-      .delay(5000)
+      .delay(2000)
       .then(() => {
         console.log('stopping retroarch ok');
         this.startKodi();
@@ -141,13 +143,29 @@ export class LocalGamesDb {
     if(game.running) return Promise.reject("game was already running");
 
     return this.stopKodi()
-      .delay(5000)
+      .delay(2000)
       .then(() => {
         console.log('stopping kodi ok');
-        this.startRetroArch(game);
+        this.stopRetroArch()
+          .delay(2000)
+          .then(() => {
+            console.log('stopping retroarch ok');
+            this.startRetroArch(game);
+          }, (err) => {
+            console.log('stopping retroarch error %s', err);
+            this.startRetroArch(game);
+          });
       },(error) => {
         console.log('stopping kodi error %s', error);
-        this.startRetroArch(game);
+        this.stopRetroArch()
+          .delay(2000)
+          .then(() => {
+            console.log('stopping retroarch ok');
+            this.startRetroArch(game);
+          }, (err) => {
+            console.log('stopping retroarch error %s', err);
+            this.startRetroArch(game);
+          });
       })
       .catch((e) => { console.log('catch kodi error %s', e); });
   }
@@ -169,10 +187,17 @@ export class LocalGamesDb {
       //   console.log(`retroarch terminated with code ${code} due to receipt of signal ${signal}`);
       // });
 
-      this.retroarch = child_process.spawn('xinit', [
-        '/usr/bin/retroarch',
+      // this.retroarch = child_process.spawn('xinit', [
+      //   '/usr/bin/retroarch',
+      //   '-L', '/usr/lib/libretro/nestopia_libretro.so',
+      //   pathGame], {stdio: "inherit"});
+
+      this.retroarch = child_process.spawn('/usr/bin/retroarch', [
         '-L', '/usr/lib/libretro/nestopia_libretro.so',
         pathGame], {stdio: "inherit"});
+
+
+
 
       // this.retroarch.stdout.on('data', (data) => {
       //   console.log(`retroarch stdout: ${data}`);

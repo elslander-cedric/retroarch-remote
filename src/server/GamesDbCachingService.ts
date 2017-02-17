@@ -31,8 +31,21 @@ export class GamesDbCachingService {
       limit: 50,
       format: "json",
       field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
-      sort: "original_game_rating:dsc",
-      filter: `platforms:21` // TODO-FIXME: limited to NES platform for now
+      sort: "original_game_rating:desc",
+      filter: "platforms:21" // TODO-FIXME: limited to NES platform for now
+    });
+
+    this.query(path, callback);
+  }
+
+  public mostPopular(callback) : void {
+    let path = '/api/games/?' + querystring.stringify({
+      api_key: this.config.get("giantbombAPIKey"),
+      limit: 50,
+      format: "json",
+      field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
+      sort: "number_of_user_reviews:desc",
+      filter: "platforms:21" // TODO-FIXME: limited to NES platform for now
     });
 
     this.query(path, callback);

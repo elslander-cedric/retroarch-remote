@@ -21,6 +21,8 @@ import { CarouselComponent } from './components/carousel/carousel.component';
 import { CarouselSlideComponent } from './components/carousel-slide/carousel-slide.component';
 import { GameService, DefaultRequestOptions } from "./services/game.service";
 import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig";
+import { GameOverviewModalComponent } from './components/game-overview-modal/game-overview-modal.component';
+import { AvailableComponent } from './components/available/available.component';
 
 @NgModule({
   declarations: [
@@ -31,10 +33,13 @@ import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig"
     SuggestionsComponent,
     ConfirmModalComponent,
     CarouselComponent,
-    CarouselSlideComponent
+    CarouselSlideComponent,
+    GameOverviewModalComponent,
+    AvailableComponent
   ],
   entryComponents: [
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    GameOverviewModalComponent
   ],
   imports: [
     BrowserModule,

@@ -30,6 +30,7 @@ export class GameSearchRequestHandler extends JsonRequestHandler {
             platforms: game.platforms.map(platform => platform.name).join(', '),
             summary: game.deck,
             description: game.description,
+            rating: game.original_game_rating,
             image: game.image ? game.image.icon_url : undefined
           }
         })

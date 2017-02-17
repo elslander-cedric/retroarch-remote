@@ -1,3 +1,12 @@
 .carousel-cointainer {
-  overflow: hidden;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  /*scroll-behavior: smooth;*/
+  /*-webkit-transition: scroll-left .2s ease-in-out;
+  transition: scroll-left .2s ease-in-out;
+  -webkit-transform: translate3d(0px, -150px, 0px);
+  transform: translate3d(0px, -150px, 0px);*/
+}
+.carousel-cointainer::-webkit-scrollbar {
+    display: none;
 }

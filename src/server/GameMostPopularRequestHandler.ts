@@ -5,7 +5,7 @@ import * as url from 'url';
 import {JsonRequestHandler} from "./JsonRequestHandler";
 import {GamesDbCachingService} from "./GamesDbCachingService";
 
-export class GameTopRatedRequestHandler extends JsonRequestHandler {
+export class GameMostPopularRequestHandler extends JsonRequestHandler {
   private gamesDbCachingService : GamesDbCachingService;
 
   constructor(gamesDbCachingService : GamesDbCachingService) {
@@ -19,7 +19,7 @@ export class GameTopRatedRequestHandler extends JsonRequestHandler {
     let requestUrl : Url = url.parse(request.url, true);
     let name = requestUrl.query['name'];
 
-    let games = this.gamesDbCachingService.topRated((games) => {
+    let games = this.gamesDbCachingService.mostPopular((games) => {
       response.statusCode = 200;
 
       response.write(JSON.stringify({

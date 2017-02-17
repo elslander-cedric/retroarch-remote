@@ -1,3 +1,10 @@
 <md-toolbar>
   <h3>Suggestions</h3>
 </md-toolbar>
+
+<carousel>
+  <carousel-slide *ngFor="let game of games;trackBy:game?.rating"
+    [image]="game.image"
+    (click)="showGameOverview(game)">
+  </carousel-slide>
+</carousel>

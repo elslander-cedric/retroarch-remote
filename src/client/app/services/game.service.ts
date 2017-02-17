@@ -51,6 +51,16 @@ export class GameService {
       .catch(this.handleError)
   }
 
+  public getMostPopular() : Promise<Game[]> {
+    const url = `${this.baseUrl}/most-popular/`;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json().data as Game[])
+      .catch(this.handleError)
+  }
+
   public launch(game: Game) : Promise<Game> {
     const url = `${this.baseUrl}/launch/`;
 
