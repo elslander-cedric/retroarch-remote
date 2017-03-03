@@ -1,4 +1,4 @@
-<md-toolbar [ngClass]="['md-primary','md-hue-3','game-search-container']">
+<md-toolbar [ngClass]="['md-primary','md-hue-1']">
   <input
     type="text"
     focusFirst
@@ -13,7 +13,7 @@
     [resultTemplate]="gameMatchTemplate"/>
   <md-spinner
     [hidden]="!searching"
-    [ngClass]="['game-search-spinner','md-primary md-hue-2']"
+    [ngClass]="['game-search-spinner']"
     mode="indeterminate">
   </md-spinner>
 </md-toolbar>
@@ -25,8 +25,8 @@
       <div [ngClass]="['game-search-item-title']">{{ r.name }}</div>
       <div [ngClass]="['game-search-item-platform']">{{ r.platforms }}</div>
     </div>
-    <button md-mini-fab class="md-primary" (click)="addGame(r)">
-      <md-icon class="md-18">add</md-icon>
+    <button md-mini-fab (click)="addGame(r)">
+      <md-icon [ngClass]="['md-18']">add</md-icon>
     </button>
   </div>
 </template>
