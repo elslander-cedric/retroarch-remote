@@ -1,8 +1,5 @@
-.form-control {}
-
-.form-group {
-  justify-content: center;
-  margin: auto;
+.game-search-input {
+  width: 150%;
 }
 
 .game-search-item-platform, .game-search-item-title {
@@ -12,7 +9,7 @@
 }
 
 .game-search-item-container {
-  width: 250px;
+  width: 260px;
   margin-right: 20px;
 }
 
@@ -23,10 +20,8 @@
 
 .game-search-spinner {
   position: absolute;
-  margin: auto;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
+  width: auto;
+  height: 30px;
+  margin-right: 10%;
+  margin-left: 80%;
 }

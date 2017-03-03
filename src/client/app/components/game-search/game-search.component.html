@@ -1,22 +1,25 @@
 <md-toolbar [ngClass]="['md-primary','md-hue-3','game-search-container']">
-  <div class="form-group" [class.has-danger]="searchFailed" fxLayout="column" fxFlex="100%">
-    <input
-      type="text"
-      class="form-control"
-      focusFirst
-      showHint
-      placeholder="Giant Bomb search ..."
-      [(ngModel)]="model"
-      [ngbTypeahead]="search"
-      [inputFormatter]="inputFormatter"
-      [resultFormatter]="resultFormatter"
-      [resultTemplate]="gameMatchTemplate"/>
-  </div>
-  <div class="form-control-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+  <input
+    type="text"
+    focusFirst
+    showHint
+    placeholder="Giant Bomb search ..."
+    [class.has-danger]="searchFailed"
+    [ngClass]="['form-control','game-search-input']"
+    [(ngModel)]="model"
+    [ngbTypeahead]="search"
+    [inputFormatter]="inputFormatter"
+    [resultFormatter]="resultFormatter"
+    [resultTemplate]="gameMatchTemplate"/>
+  <md-spinner
+    [hidden]="!searching"
+    [ngClass]="['game-search-spinner','md-primary md-hue-2']"
+    mode="indeterminate">
+  </md-spinner>
 </md-toolbar>
 
 <template #gameMatchTemplate let-r="result" let-t="term">
-  <div [ngClass]="['game-search-item-container']" fxFlex="100%" fxLayout="row" fxLayoutAlign="start start end">
+  <div [ngClass]="['game-search-item-container']" fxFlex="100%" fxLayout="row" fxLayoutAlign="start start">
     <img [src]="r.image" fxFlex="20%">
     <div [ngClass]="['game-search-item-description']" fxLayout="column" fxFlex="75%">
       <div [ngClass]="['game-search-item-title']">{{ r.name }}</div>
@@ -27,5 +30,3 @@
     </button>
   </div>
 </template>
-
-<md-spinner *ngIf="searching" [ngClass]="['game-search-spinner','md-primary md-hue-2']" mode="indeterminate"></md-spinner>

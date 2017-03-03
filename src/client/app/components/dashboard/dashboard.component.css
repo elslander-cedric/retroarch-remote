@@ -12,3 +12,12 @@ md-card-subtitle div, md-card-title div {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+md-card-title {
+  margin-bottom: 10px;
+}
+
+img[md-card-avatar] {
+  height: 100%;
+  width: auto;
+}
