@@ -22,7 +22,7 @@ export class Server {
       new GamesDbCachingService(config));
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
-      console.log("> [%s] - %s", request.method, request.url);
+      console.log("[%s] - %s", request.method, request.url);
 
       // common http headers
       response.setHeader('Access-Control-Allow-Origin', '*');

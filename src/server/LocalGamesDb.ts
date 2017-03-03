@@ -56,6 +56,10 @@ export class LocalGamesDb {
     return this.games;
   }
 
+  public getDownloadableGames() : Array<Game> {
+    return this.config.get('downloadUrls');
+  }
+
   public addGame(game: Game) : Promise<any|void> {
     console.log("add game: %s", game.name);
     if(this.games.filter((_game) => _game.id === game.id).length >0) return Promise.reject("game already in list");

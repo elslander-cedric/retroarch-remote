@@ -1,6 +1,8 @@
 import * as http from 'http';
 import * as querystring from 'querystring';
 import * as sync_request  from 'sync-request';
+import { IncomingMessage } from 'http';
+import { Observable, Observer } from 'rxjs/Rx';
 
 import { Config } from "./Config";
 import { Game } from "./Game";
@@ -12,47 +14,60 @@ export class GamesDbCachingService {
       this.config = config;
   }
 
-  public search(name : string, callback) : void {
+  public searchByName(name : string) : Observable<Array<Game>> {
     let path = '/api/games/?' + querystring.stringify({
       api_key: this.config.get("giantbombAPIKey"),
-      limit: 10,
+      limit: 5,
       format: "json",
       field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
       sort: "name:asc",
       filter: `name:${name},platforms:21` // TODO-FIXME: limited to NES platform for now
     });
 
-    this.query(path, callback);
+    return this.query(path);
   }
 
-  public topRated(callback) : void {
+  public searchById(id : number) : Observable<Array<Game>> {
     let path = '/api/games/?' + querystring.stringify({
       api_key: this.config.get("giantbombAPIKey"),
-      limit: 50,
+      limit: 5,
+      format: "json",
+      field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
+      filter: `id:${id},platforms:21` // TODO-FIXME: limited to NES platform for now
+    });
+
+    return this.query(path);
+  }
+
+  public topRated(offset : number = 0, limit : number = 0) : Observable<Array<Game>> {
+    let path = '/api/games/?' + querystring.stringify({
+      api_key: this.config.get("giantbombAPIKey"),
+      limit: limit,
+      offset: offset,
       format: "json",
       field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
       sort: "original_game_rating:desc",
       filter: "platforms:21" // TODO-FIXME: limited to NES platform for now
     });
 
-    this.query(path, callback);
+    return this.query(path);
   }
 
-  public mostPopular(callback) : void {
+  public mostPopular(offset:number = 0, limit : number = 0) : Observable<Array<Game>> {
     let path = '/api/games/?' + querystring.stringify({
       api_key: this.config.get("giantbombAPIKey"),
-      limit: 50,
+      limit: limit,
+      offset: offset,
       format: "json",
       field_list: "id,name,deck,description,image,platforms,original_game_rating,original_release_date",
       sort: "number_of_user_reviews:desc",
       filter: "platforms:21" // TODO-FIXME: limited to NES platform for now
     });
 
-    this.query(path, callback);
+    return this.query(path);
   }
 
-  // TODO-FIXME: use promise
-  private query(path : string, callback) : void {
+  private query(path : string) : Observable<Array<Game>> {
     // see http://stackoverflow.com/questions/22918573/giantbomb-api-work
     let options = {
       hostname: 'www.giantbomb.com',
@@ -65,28 +80,42 @@ export class GamesDbCachingService {
       json: true
     };
 
-    http.request(options, (response) => {
-      let responseBody = [];
-
-      response
-      .on('data', (chunk) => {
-        responseBody.push(chunk);
-      })
-      .on('end', () => {
-        let jsonResponse = JSON.parse(Buffer.concat(responseBody).toString());
+    return this.send(options)
+      .reduce((acc: Buffer, value: Buffer) => Buffer.concat([acc, value]))
+      .map((buffer : Buffer) => {
+        let jsonResponse = JSON.parse(buffer.toString());
 
         if(jsonResponse.status_code === 1) { // OK
-          callback(jsonResponse.results);
-        } else {
-          console.log(`error with request: ${jsonResponse.error}`);
-        }
-      })
-      .on('error', (e) => {
-        console.log(`problem with response: ${e.message}`);
-      });
+          let games : Array<any> = jsonResponse.results;
 
-    }).on('error', (e) => {
-      console.log(`problem with request: ${e.message}`);
-    }).end();
+          return games.map((game) => {
+            return {
+              id: game.id,
+              name: game.name,
+              platforms: game.platforms.map(platform => platform.name).join(', '),
+              summary: game.deck,
+              description: game.description,
+              rating: game.original_game_rating,
+              image: game.image ? game.image.icon_url : undefined
+            } as Game
+          })
+        } else {
+          return Observable.of(new Array<Game>());
+        }
+      });
   }
+
+  private send(options) : Observable<Buffer> {
+    return Observable.create((observer : Observer<Buffer>) => {
+      console.log(`[${options.method}] - ${options.path}`);
+
+      http.request(options, (response) => {
+        response
+        .on('data', (chunk : Buffer) => observer.next(chunk))
+        .on('end', () => observer.complete())
+        .on('error', (e) => observer.error(e));
+      }).end();
+    });
+  }
+
 }

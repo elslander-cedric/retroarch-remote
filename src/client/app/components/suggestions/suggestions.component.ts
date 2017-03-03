@@ -1,6 +1,16 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MaterialModule } from '@angular/material';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable }        from 'rxjs/Observable';
+import { Subject }        from 'rxjs/Subject';
+
+import 'rxjs/Observable';
+import 'rxjs/Subject';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinct';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/operator/scan';
 
 import { GameService } from "../../services/game.service";
 import { Game } from "../../shared/game";
@@ -17,21 +27,29 @@ export class SuggestionsComponent implements OnInit {
 
   @ViewChild(CarouselComponent) carousel : CarouselComponent;
 
-  public games : Game[] = [];
+  public games : Observable<Game[]>;
+  private gamesQuery = new Subject<number>();
 
   constructor(
     private gameService: GameService,
     private modalService: NgbModal) {};
 
   public ngOnInit(): void {
-    this.gameService.getMostPopular()
-      .then((games : Array<Game>) => {
-        this.games = games;
-      })
-      .catch((err : never) => this.onUserError(`error occured while getting top rated games: ${err}`));
+    this.games = this.gamesQuery
+      .debounceTime(200)
+      .map((offset) => Math.round((offset + 400)/1000))
+      .distinct()
+      .concatMap((offset) => this.gameService.getMostPopular(offset * 10, 10))
+      .scan((acc, curr) => acc.concat(curr));
   }
 
-  public ngAfterViewInit() {}
+  public ngAfterViewInit() {
+    this.gamesQuery.next(0);
+  }
+
+  public update(offset) : void {
+    this.gamesQuery.next(offset);
+  }
 
   public onUserError(error : string) : void {
     const modalRef = this.modalService.open(ConfirmModalComponent);

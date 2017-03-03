@@ -1,10 +1,13 @@
 <div
   [ngClass]="['carousel-cointainer']"
-  fxLayout="row">
+  fxLayout="row"
+  (scroll)="onScroll($event)">
   <ng-content></ng-content>
 </div>
 
-<!-- (panleft)="onPan($event)"
+<!--
+(panleft)="onPan($event)"
 (panright)="onPan($event)"
 (panend)="onPan($event)"
-(swipe)="onSwipe($event)" -->
+(swipe)="onSwipe($event)"
+ -->

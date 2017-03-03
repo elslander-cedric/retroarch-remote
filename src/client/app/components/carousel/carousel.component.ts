@@ -8,8 +8,10 @@ import {
   AfterContentInit,
   QueryList,
   Input,
+  Output,
   ElementRef,
-  Renderer } from '@angular/core';
+  Renderer,
+  EventEmitter } from '@angular/core';
 
 import { CarouselSlideComponent } from "../carousel-slide/carousel-slide.component";
 
@@ -25,6 +27,8 @@ export class CarouselComponent implements OnInit, AfterContentInit {
 
   @ContentChildren(CarouselSlideComponent) slides : QueryList<CarouselSlideComponent>;
   @ViewChild(CarouselContainer) div : CarouselContainer;
+
+  @Output() onLoadMore = new EventEmitter<number>();
 
   private offsetX : number = 0;
   private positionX : number = 0;
@@ -77,5 +81,10 @@ export class CarouselComponent implements OnInit, AfterContentInit {
     // }
     //
     // this.el.nativeElement.children[0].scrollLeft = this.offsetX;
+
+  }
+
+  onScroll(event : any) : void {
+    this.onLoadMore.emit(event.srcElement.scrollLeft);
   }
 }

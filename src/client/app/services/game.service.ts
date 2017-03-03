@@ -41,8 +41,8 @@ export class GameService {
       .catch(this.handleError)
   }
 
-  public getTopRated() : Promise<Game[]> {
-    const url = `${this.baseUrl}/top-rated/`;
+  public getAvailable(offset, limit) : Promise<Game[]> {
+    const url = `${this.baseUrl}/available/?offset=${offset}&limit=${limit}`;
 
     return this.http
       .get(url)
@@ -51,8 +51,18 @@ export class GameService {
       .catch(this.handleError)
   }
 
-  public getMostPopular() : Promise<Game[]> {
-    const url = `${this.baseUrl}/most-popular/`;
+  public getTopRated(offset, limit) : Promise<Game[]> {
+    const url = `${this.baseUrl}/top-rated/?offset=${offset}&limit=${limit}`;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json().data as Game[])
+      .catch(this.handleError)
+  }
+
+  public getMostPopular(offset, limit) : Promise<Game[]> {
+    const url = `${this.baseUrl}/most-popular/?offset=${offset}&limit=${limit}`;
 
     return this.http
       .get(url)

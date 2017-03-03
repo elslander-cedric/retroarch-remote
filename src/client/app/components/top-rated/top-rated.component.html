@@ -2,8 +2,8 @@
   <h3>Top Rated</h3>
 </md-toolbar>
 
-<carousel>
-  <carousel-slide *ngFor="let game of games;trackBy:game?.rating"
+<carousel (onLoadMore)="update($event)">
+  <carousel-slide *ngFor="let game of games | async;trackBy:game?.rating"
     [image]="game.image"
     (click)="showGameOverview(game)">
   </carousel-slide>

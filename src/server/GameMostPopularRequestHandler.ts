@@ -2,9 +2,9 @@ import { IncomingMessage, ServerResponse } from "http";
 import { Url } from "url";
 import * as url from 'url';
 
-import {JsonRequestHandler} from "./JsonRequestHandler";
-import {GamesDbCachingService} from "./GamesDbCachingService";
-
+import { JsonRequestHandler } from "./JsonRequestHandler";
+import { GamesDbCachingService } from "./GamesDbCachingService";
+import { Game } from "./Game";
 export class GameMostPopularRequestHandler extends JsonRequestHandler {
   private gamesDbCachingService : GamesDbCachingService;
 
@@ -17,26 +17,15 @@ export class GameMostPopularRequestHandler extends JsonRequestHandler {
     this.preHandle(request, response);
 
     let requestUrl : Url = url.parse(request.url, true);
-    let name = requestUrl.query['name'];
+    let offset = requestUrl.query['offset'];
+    let limit = requestUrl.query['limit'];
 
-    let games = this.gamesDbCachingService.mostPopular((games) => {
-      response.statusCode = 200;
-
-      response.write(JSON.stringify({
-        data: games.map(game => {
-          return {
-            id: game.id,
-            name: game.name,
-            platforms: game.platforms.map(platform => platform.name).join(', '),
-            summary: game.deck,
-            description: game.description,
-            rating: game.original_game_rating,
-            image: game.image ? game.image.icon_url : undefined
-          }
-        })
-      }));
-
-      this.postHandle(request, response);
-    });
+    this.gamesDbCachingService.mostPopular(offset, limit)
+      .toPromise()
+      .then((games : Game []) => {
+        response.statusCode = 200;
+        response.write(JSON.stringify({ data: games }));
+        this.postHandle(request, response);
+      });
   }
 }
