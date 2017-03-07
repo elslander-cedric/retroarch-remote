@@ -3,15 +3,14 @@ import { Url } from "url";
 import * as url from 'url';
 
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { GamesDbCachingService } from "./GamesDbCachingService";
-import { Game } from "./Game";
+import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
+import { Game } from "../Game";
+export class GameMostPopularRequestHandler extends JsonRequestHandler {
+  private GiantBombAPIService : GiantBombAPIService;
 
-export class GameTopRatedRequestHandler extends JsonRequestHandler {
-  private gamesDbCachingService : GamesDbCachingService;
-
-  constructor(gamesDbCachingService : GamesDbCachingService) {
+  constructor(GiantBombAPIService : GiantBombAPIService) {
     super();
-    this.gamesDbCachingService = gamesDbCachingService;
+    this.GiantBombAPIService = GiantBombAPIService;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -21,7 +20,7 @@ export class GameTopRatedRequestHandler extends JsonRequestHandler {
     let offset = requestUrl.query['offset'];
     let limit = requestUrl.query['limit'];
 
-    this.gamesDbCachingService.topRated(offset, limit)
+    this.GiantBombAPIService.mostPopular(offset, limit)
       .toPromise()
       .then((games : Game []) => {
         response.statusCode = 200;

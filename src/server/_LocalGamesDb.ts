@@ -40,10 +40,10 @@ export class LocalGamesDb {
   }
 
   public save() : Promise<any|void> {
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       fs.writeFile(this.config.get('gamesDbPath'), JSON.stringify(this.games), { encoding: LocalGamesDb.fileEncoding, flag: 'w' }, (err) => {
         if (err) throw err;
-        onSuccess();
+        resolve();
       });
     });
   }
@@ -85,22 +85,22 @@ export class LocalGamesDb {
     if(fs.existsSync(pathGame)) return Promise.reject("game was already downloaded");
     if(!_game) return Promise.reject("no download available for that game");
 
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       request
         .get(_game.downloadUrl)
-        .on('error', (err) => { onError(err) })
+        .on('error', (err) => { reject(err) })
         .pipe(fs.createWriteStream(pathArchive, { flags: 'w+' }))
         .on('finish', () => {
           console.log("game downloaded, extracting ...");
 
           fs.createReadStream(pathArchive)
-            .on('error', (err) => { onError(err) })
+            .on('error', (err) => { reject(err) })
             // .pipe(unzip.Extract({ path: this.config.get('downloadDir') }))
             .pipe(unzip.Parse())
             .on('entry', function (entry) {
-              var fileName = entry.path;
-              var type = entry.type; // 'Directory' or 'File'
-              var size = entry.size;
+              let fileName = entry.path;
+              let type = entry.type; // 'Directory' or 'File'
+              let size = entry.size;
               if (type === "File") {
                 entry.pipe(fs.createWriteStream(pathGame));
               } else {
@@ -111,12 +111,12 @@ export class LocalGamesDb {
               console.log("game extracted");
               game.downloaded = true;
 
-              // onSuccess(game);
+              // resolve(game);
               fs.unlink(pathArchive, (err) => {
                 if(err) {
-                  onError("could not remove archive");
+                  reject("could not remove archive");
                 } else {
-                  onSuccess(game);
+                  resolve(game);
                 }
               });
             });
@@ -180,12 +180,12 @@ export class LocalGamesDb {
 
     console.log('run %s', command);
 
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       // this.retroarch = child_process.exec(command, (error, stdout, stderr) => {
       //   if (error) {
-      //     onError(`${error} - stderr: ${stderr}`);
+      //     reject(`${error} - stderr: ${stderr}`);
       //   } else {
-      //     onSuccess(`stdout: ${stdout}`);
+      //     resolve(`stdout: ${stdout}`);
       //   }
       // }).on('close', (code, signal) => {
       //   console.log(`retroarch terminated with code ${code} due to receipt of signal ${signal}`);
@@ -215,7 +215,7 @@ export class LocalGamesDb {
       //   console.log(`retroarch exited with code ${code}`);
       // });
 
-      onSuccess();
+      resolve();
     });
   }
 
@@ -224,11 +224,11 @@ export class LocalGamesDb {
       return Promise.reject("retroarch is not running");
     }
 
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       console.log("killing retroarch with pid: %s", this.retroarch.pid);
       this.retroarch.kill(); // will not kill children of my children
       this.retroarch = null;
-      onSuccess();
+      resolve();
     });
   }
 
@@ -237,12 +237,12 @@ export class LocalGamesDb {
 
     console.log('run %s', command);
 
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       this.kodi = child_process.exec(command, (error, stdout, stderr) => {
         if (error) {
-          onError(`${error} - stderr: ${stderr}`);
+          reject(`${error} - stderr: ${stderr}`);
         } else {
-          onSuccess(`stdout: ${stdout}`);
+          resolve(`stdout: ${stdout}`);
         }
       }).on('close', (code, signal) => {
         console.log(`kodi terminated with code ${code} due to receipt of signal ${signal}`);
@@ -253,7 +253,7 @@ export class LocalGamesDb {
   private stopKodi() : Promise<any|void> {
     console.log('stopping kodi');
 
-    return new Promise((onSuccess, onError) => {
+    return new Promise((resolve, reject) => {
       let options = {
         hostname: 'localhost',
         port: 8084,
@@ -271,16 +271,16 @@ export class LocalGamesDb {
         .on('data', () => {})
         .on('end', () => {
           console.log('stopping kodi ok');
-          onSuccess();
+          resolve();
         })
         .on('error', (e) => {
           console.log('stopping kodi error');
-          onError(`problem with response: ${e.message}`);
+          reject(`problem with response: ${e.message}`);
         });
 
       }).on('error', (e) => {
         console.log('stopping kodi error');
-        onError(`problem with request: ${e.message}`);
+        reject(`problem with request: ${e.message}`);
       })
 
       request.write(JSON.stringify({ jsonrpc: "2.0", method: "Application.Quit", id: 1} ));

@@ -9,6 +9,7 @@ export class Game {
   public releasedate;
   public downloaded;
   public running;
+  public downloadUrl;
 
   constructor() {}
 }

@@ -2,22 +2,23 @@ import { IncomingMessage, ServerResponse } from "http";
 import { Url } from "url";
 import * as url from 'url';
 import { Observable } from 'rxjs/Rx';
+import { knuthShuffle } from 'knuth-shuffle';
 
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { LocalGamesDb } from "./LocalGamesDb";
-import { GamesDbCachingService } from "./GamesDbCachingService";
-import { Game } from "./Game";
+import { GameLibrary } from "../GameLibrary";
+import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
+import { Game } from "../Game";
 
 export class GameAvailableRequestHandler extends JsonRequestHandler {
-  private localGamesDb : LocalGamesDb;
-  private gamesDbCachingService : GamesDbCachingService;
+  private gameLibrary : GameLibrary;
+  private GiantBombAPIService : GiantBombAPIService;
 
   constructor(
-    localGamesDb : LocalGamesDb,
-    gamesDbCachingService : GamesDbCachingService) {
+    gameLibrary : GameLibrary,
+    GiantBombAPIService : GiantBombAPIService) {
     super();
-    this.localGamesDb = localGamesDb;
-    this.gamesDbCachingService = gamesDbCachingService;
+    this.gameLibrary = gameLibrary;
+    this.GiantBombAPIService = GiantBombAPIService;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -27,13 +28,15 @@ export class GameAvailableRequestHandler extends JsonRequestHandler {
     let offset = requestUrl.query['offset'];
     let limit = requestUrl.query['limit'];
 
+    if(parseInt(offset) === 0) {
+      knuthShuffle(this.gameLibrary.games);
+    }
+
     let dwnlGames : Array<Game> =
-      this.localGamesDb
-        .getDownloadableGames()
-          .slice(offset, parseInt(offset) + parseInt(limit));
+      this.gameLibrary.games.slice(offset, parseInt(offset) + parseInt(limit));
 
     Observable.from(dwnlGames.map((game : Game) => game.id))
-      .concatMap((id : number) => this.gamesDbCachingService.searchById(id))
+      .concatMap((id : number) => this.GiantBombAPIService.searchById(id))
       .reduce((acc: Game[], value: Game[]) => acc.concat(value))
       .toPromise()
       .then((games : Game []) => {

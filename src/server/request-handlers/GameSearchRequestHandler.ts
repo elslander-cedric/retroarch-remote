@@ -3,15 +3,15 @@ import { Url } from "url";
 import * as url from 'url';
 
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { GamesDbCachingService } from "./GamesDbCachingService";
-import { Game } from "./Game";
+import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
+import { Game } from "../Game";
 
 export class GameSearchRequestHandler extends JsonRequestHandler {
-  private gamesDbCachingService : GamesDbCachingService;
+  private GiantBombAPIService : GiantBombAPIService;
 
-  constructor(gamesDbCachingService : GamesDbCachingService) {
+  constructor(GiantBombAPIService : GiantBombAPIService) {
     super();
-    this.gamesDbCachingService = gamesDbCachingService;
+    this.GiantBombAPIService = GiantBombAPIService;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -20,7 +20,7 @@ export class GameSearchRequestHandler extends JsonRequestHandler {
     let requestUrl : Url = url.parse(request.url, true);
     let name = requestUrl.query['name'];
 
-    this.gamesDbCachingService.searchByName(name)
+    this.GiantBombAPIService.searchByName(name)
       .toPromise()
       .then((games : Game []) => {
         response.statusCode = 200;

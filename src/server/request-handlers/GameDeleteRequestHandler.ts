@@ -4,15 +4,15 @@ import { Url } from "url";
 import * as url from 'url';
 
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { Game } from "./Game";
-import { LocalGamesDb } from "./LocalGamesDb";
+import { Game } from "../Game";
+import { GameRegistry } from "../GameRegistry";
 
-export class GameDownloadRequestHandler extends JsonRequestHandler {
-  private localGamesDb : LocalGamesDb;
+export class GameDeleteRequestHandler extends JsonRequestHandler {
+  private gameRegistry : GameRegistry;
 
-  constructor(localGamesDb : LocalGamesDb) {
+  constructor(gameRegistry : GameRegistry) {
     super();
-    this.localGamesDb = localGamesDb;
+    this.gameRegistry = gameRegistry;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -20,15 +20,11 @@ export class GameDownloadRequestHandler extends JsonRequestHandler {
 
     let requestUrl : Url = url.parse(request.url, true);
     let id = requestUrl.query['id'];
-    let game : Game = this.localGamesDb.getGame(parseInt(id));
+    let game : Game = this.gameRegistry.getFavorite(parseInt(id));
 
-    this.localGamesDb.downloadGame(game)
+    this.gameRegistry.removeFavorite(game)
       .then((game: Game) => {
         response.statusCode = 200; // ok
-        this.postHandle(request, response);
-      }, (err) => {
-        response.statusCode = 400; // bad request
-        response.write(JSON.stringify({ errors: [err] }));
         this.postHandle(request, response);
       })
       .catch((err) => {

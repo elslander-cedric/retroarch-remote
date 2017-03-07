@@ -4,15 +4,15 @@ import { Url } from "url";
 import * as url from 'url';
 
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { Game } from "./Game";
-import { LocalGamesDb } from "./LocalGamesDb";
+import { Game } from "../Game";
+import { GameTaskRunner } from "../GameTaskRunner";
 
-export class GameDeleteRequestHandler extends JsonRequestHandler {
-  private localGamesDb : LocalGamesDb;
+export class GameLaunchRequestHandler extends JsonRequestHandler {
+  private gameTaskRunner : GameTaskRunner;
 
-  constructor(localGamesDb : LocalGamesDb) {
+  constructor(gameTaskRunner : GameTaskRunner) {
     super();
-    this.localGamesDb = localGamesDb;
+    this.gameTaskRunner = gameTaskRunner;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -20,11 +20,15 @@ export class GameDeleteRequestHandler extends JsonRequestHandler {
 
     let requestUrl : Url = url.parse(request.url, true);
     let id = requestUrl.query['id'];
-    let game : Game = this.localGamesDb.getGame(parseInt(id));
+    let game : Game = { id: parseInt(id) } as Game;
 
-    this.localGamesDb.deleteGame(game)
+    this.gameTaskRunner.launch(game)
       .then((game: Game) => {
         response.statusCode = 200; // ok
+        this.postHandle(request, response);
+      }, (err) => {
+        response.statusCode = 400; // bad request
+        response.write(JSON.stringify({ errors: [err] }));
         this.postHandle(request, response);
       })
       .catch((err) => {

@@ -2,41 +2,48 @@ import { IncomingMessage, ServerResponse } from "http";
 import * as url from 'url';
 
 import { RequestProcessor } from "./RequestProcessor";
-import { FileRequestHandler } from "./FileRequestHandler";
-import { GameListRequestHandler } from "./GameListRequestHandler";
-import { GameTopRatedRequestHandler } from "./GameTopRatedRequestHandler";
-import { GameAvailableRequestHandler } from "./GameAvailableRequestHandler";
-import { GameMostPopularRequestHandler } from "./GameMostPopularRequestHandler";
-import { GameDownloadRequestHandler } from "./GameDownloadRequestHandler";
-import { GameLaunchRequestHandler } from "./GameLaunchRequestHandler";
-import { GameStopRequestHandler } from "./GameStopRequestHandler";
-import { GameSearchRequestHandler } from "./GameSearchRequestHandler";
-import { GameAddRequestHandler } from "./GameAddRequestHandler";
-import { GameDeleteRequestHandler } from "./GameDeleteRequestHandler";
-import { GamesDbCachingService } from "./GamesDbCachingService";
-import { LocalGamesDb } from "./LocalGamesDb";
+import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
+import { GameRegistry } from "./GameRegistry";
+import { GameLibrary } from "./GameLibrary";
+import { GameTaskRunner } from "./GameTaskRunner";
 import { Config } from "./Config";
+
+import { FileRequestHandler } from "./request-handlers/FileRequestHandler";
+import { GameListRequestHandler } from "./request-handlers/GameListRequestHandler";
+import { GameTopRatedRequestHandler } from "./request-handlers/GameTopRatedRequestHandler";
+import { GameAvailableRequestHandler } from "./request-handlers/GameAvailableRequestHandler";
+import { GameMostPopularRequestHandler } from "./request-handlers/GameMostPopularRequestHandler";
+import { GameDownloadRequestHandler } from "./request-handlers/GameDownloadRequestHandler";
+import { GameLaunchRequestHandler } from "./request-handlers/GameLaunchRequestHandler";
+import { GameStopRequestHandler } from "./request-handlers/GameStopRequestHandler";
+import { GameSearchRequestHandler } from "./request-handlers/GameSearchRequestHandler";
+import { GameAddRequestHandler } from "./request-handlers/GameAddRequestHandler";
+import { GameDeleteRequestHandler } from "./request-handlers/GameDeleteRequestHandler";
 
 export class RequestDispatcher {
   private requestProcessor : RequestProcessor;
 
-  constructor(localGamesDb : LocalGamesDb, gamesDbCachingService : GamesDbCachingService) {
+  constructor(
+    gameRegistry : GameRegistry,
+    gameLibrary : GameLibrary,
+    gameTaskRunner : GameTaskRunner,
+    GiantBombAPIService : GiantBombAPIService) {
     this.requestProcessor = new RequestProcessor()
       .addHandler('/', new FileRequestHandler())
-      .addHandler('/games/list/', new GameListRequestHandler(localGamesDb))
-      .addHandler('/games/most-popular/', new GameMostPopularRequestHandler(gamesDbCachingService))
-      .addHandler('/games/top-rated/', new GameTopRatedRequestHandler(gamesDbCachingService))
-      .addHandler('/games/available/', new GameAvailableRequestHandler(localGamesDb, gamesDbCachingService))
-      .addHandler('/games/download/', new GameDownloadRequestHandler(localGamesDb))
-      .addHandler('/games/launch/', new GameLaunchRequestHandler(localGamesDb))
-      .addHandler('/games/stop/', new GameStopRequestHandler(localGamesDb))
-      .addHandler('/games/search/', new GameSearchRequestHandler(gamesDbCachingService))
-      .addHandler('/games/add/', new GameAddRequestHandler(localGamesDb))
-      .addHandler('/games/delete/', new GameDeleteRequestHandler(localGamesDb));
+      .addHandler('/games/list/', new GameListRequestHandler(gameRegistry))
+      .addHandler('/games/most-popular/', new GameMostPopularRequestHandler(GiantBombAPIService))
+      .addHandler('/games/top-rated/', new GameTopRatedRequestHandler(GiantBombAPIService))
+      .addHandler('/games/available/', new GameAvailableRequestHandler(gameLibrary, GiantBombAPIService))
+      .addHandler('/games/download/', new GameDownloadRequestHandler(gameLibrary, gameTaskRunner))
+      .addHandler('/games/launch/', new GameLaunchRequestHandler(gameTaskRunner))
+      .addHandler('/games/stop/', new GameStopRequestHandler(gameTaskRunner))
+      .addHandler('/games/search/', new GameSearchRequestHandler(GiantBombAPIService))
+      .addHandler('/games/add/', new GameAddRequestHandler(gameRegistry))
+      .addHandler('/games/delete/', new GameDeleteRequestHandler(gameRegistry));
   };
 
   public dispatch(request: IncomingMessage, response: ServerResponse) {
-    var pathname = url.parse(request.url).pathname;
+    let pathname = url.parse(request.url).pathname;
 
     this.requestProcessor
       .getHandler(pathname)

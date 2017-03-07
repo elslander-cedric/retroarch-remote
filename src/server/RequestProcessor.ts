@@ -1,4 +1,4 @@
-import { RequestHandler } from "./RequestHandler";
+import { RequestHandler } from "./request-handlers/RequestHandler";
 
 export class RequestProcessor {
   private handlers = [];

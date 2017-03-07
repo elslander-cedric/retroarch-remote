@@ -3,15 +3,15 @@ import * as url from 'url';
 import { IncomingMessage, ServerResponse } from "http";
 import { Url } from "url";
 import { JsonRequestHandler } from "./JsonRequestHandler";
-import { Game } from "./Game";
-import { LocalGamesDb } from "./LocalGamesDb";
+import { Game } from "../Game";
+import { GameRegistry } from "../GameRegistry";
 
 export class GameAddRequestHandler extends JsonRequestHandler {
-  private localGamesDb : LocalGamesDb;
+  private gameRegistry : GameRegistry;
 
-  constructor(localGamesDb : LocalGamesDb) {
+  constructor(gameRegistry : GameRegistry) {
     super();
-    this.localGamesDb = localGamesDb;
+    this.gameRegistry = gameRegistry;
   };
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
@@ -26,7 +26,7 @@ export class GameAddRequestHandler extends JsonRequestHandler {
     .on('end', () => {
       let game : Game = JSON.parse(Buffer.concat(requestBody).toString());
 
-      this.localGamesDb.addGame(game)
+      this.gameRegistry.addFavorite(game)
         .then((game: Game) => {
           response.statusCode = 200; // ok
           this.postHandle(request, response);

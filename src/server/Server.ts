@@ -3,9 +3,14 @@ import { IncomingMessage, ServerResponse } from "http";
 import * as http from "http";
 
 import { Config } from "./Config";
+import { GameRegistry } from "./GameRegistry";
+import { GameLibrary } from "./GameLibrary";
+import { GameTaskRunner } from "./GameTaskRunner";
+import { KodiRPCCommandExecutor } from './kodi/KodiRPCCommandExecutor';
+import { RetroArchLauncher } from './retroarch/RetroArchLauncher';
+import { KodiLauncher } from './kodi/KodiLauncher';
 import { RequestDispatcher } from "./RequestDispatcher";
-import { GamesDbCachingService } from "./GamesDbCachingService";
-import { LocalGamesDb } from "./LocalGamesDb";
+import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
 
 export class Server {
   private server : http.Server;
@@ -18,8 +23,13 @@ export class Server {
     let config : Config = new Config().init();
 
     let requestDispatcher : RequestDispatcher = new RequestDispatcher(
-      new LocalGamesDb(config).init(),
-      new GamesDbCachingService(config));
+      new GameRegistry().init(),
+      new GameLibrary().init(),
+      new GameTaskRunner(config,
+        new RetroArchLauncher(),
+        new KodiLauncher(),
+        new KodiRPCCommandExecutor()),
+      new GiantBombAPIService(config));
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
       console.log("[%s] - %s", request.method, request.url);
@@ -44,7 +54,7 @@ export class Server {
   }
 
   public stop() :void {
-    console.log("stopping server");
+    console.log("stopping server ...");
     this.server.close();
   }
 }

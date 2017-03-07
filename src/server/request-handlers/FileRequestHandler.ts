@@ -17,15 +17,25 @@ export class FileRequestHandler implements RequestHandler {
   public handle(request: IncomingMessage, response: ServerResponse): void {
     this.preHandle(request, response);
 
-    var pathname = url.parse(request.url).pathname;
+    let pathname = url.parse(request.url).pathname;
 
-    if (pathname === '/') { pathname = '/index.html'; }
+    if (pathname === '/') { // defaults to /index.html
+      pathname = '/index.html';
+    }
 
-    // TODO-FIXME
-    console.log(path.resolve(__dirname, pathname));
-    pathname = pathname.slice(1);
+    /*    
+    if (pathname === '/') { // redirect to /index.html
+      response.writeHead(302, {
+        'Location': '/index.html'
+      });
+      this.postHandle(request, response);
+      return;
+    }
+    */
+
+    pathname = pathname.slice(1); // omit leading '/'
+
     fs.readFile(pathname, {}, (err, data) => {
-    // fs.readFile(path.resolve(__dirname, pathname), {}, (err, data) => {
       response.statusCode = err ? 404 : 200;
 
       if (err) {

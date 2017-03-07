@@ -4,10 +4,10 @@ import * as sync_request  from 'sync-request';
 import { IncomingMessage } from 'http';
 import { Observable, Observer } from 'rxjs/Rx';
 
-import { Config } from "./Config";
-import { Game } from "./Game";
+import { Config } from "../Config";
+import { Game } from "../Game";
 
-export class GamesDbCachingService {
+export class GiantBombAPIService {
   private config : Config;
 
   constructor(config : Config) {

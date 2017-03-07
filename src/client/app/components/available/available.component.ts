@@ -36,19 +36,18 @@ export class AvailableComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.games = this.gamesQuery
-      .debounceTime(200)
-      .map((offset) => Math.round((offset + 400)/1000))
+      .map((offset) => Math.round(offset/100))
       .distinct()
-      .concatMap((offset) => this.gameService.getAvailable(offset * 10, 10))
+      .concatMap((offset) => this.gameService.getAvailable(offset, 1))
       .scan((acc, curr) => acc.concat(curr));
   }
 
   public ngAfterViewInit() {
-      this.gamesQuery.next(0);
+      [0,1,2,3,4,5,6,7,8,9].forEach((i) => this.gamesQuery.next(i * 100));
   }
 
   public update(offset) : void {
-    this.gamesQuery.next(offset);
+    this.gamesQuery.next(offset + 1000);
   }
 
   public onUserError(error : string) : void {
