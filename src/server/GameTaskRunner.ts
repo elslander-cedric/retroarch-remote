@@ -44,15 +44,15 @@ export class GameTaskRunner {
     console.log(`try to stop kodi`);
     return this.kodiRPCCommandExecutor.stop()
       .then((result) => console.log(`kodi stop ok: ${result}`))
-      .catch((err) => console.error(`kodi stop error: ${err}`))
       .delay(3000)
+      .catch((err) => console.error(`kodi stop error: ${err}`))
       .then(() => {
         console.log(`try to stop retroarch`);
         return this.retroArchProcessExecution.stop();
       })
       .then((result) => console.log(`retroarch stop ok: ${result}`))
       .catch((err) => console.error(`retroarch stop error: ${err}`))
-      .delay(3000)
+      .delay(1000)
       .then(() => {
         console.log(`try to start retroarch`);
         return this.retroArchLauncher.launch(retroArchArgs);
@@ -69,7 +69,7 @@ export class GameTaskRunner {
   public stop(game : Game) : Promise<any|void> {
     // TODO-FIXME: to be tested
     // TODO-FIXME: check if config('kodi') === true
-    const kodiArgs = ['-nocursor', ':0'];
+    const kodiArgs = ['/usr/bin/xbmc', '-nocursor', ':0'];
 
     return Promise
       .try(() => {
@@ -78,7 +78,7 @@ export class GameTaskRunner {
       })
       .then((result) => console.log(`retroarch stop result: ${result}`))
       .catch((err) => console.error(`retroarch stop error: ${err}`))
-      .delay(3000)
+      .delay(1000)
       .then(() => {
         console.log(`try to launch kodi`);
         return this.kodiLauncher.launch(kodiArgs);

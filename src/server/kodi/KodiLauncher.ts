@@ -9,7 +9,7 @@ import { ProcessLauncher } from '../ProcessLauncher';
 export class KodiLauncher implements ProcessLauncher {
 
   public launch(args ?: Array<string>) : Promise<ProcessExecution>  {
-    const command = `xinit /usr/bin/xbmc`;
+    const command = `xinit`;
 
     let kodi =
       child_process.spawn(command, args, {

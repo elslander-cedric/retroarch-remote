@@ -20,6 +20,7 @@ RetroArch Remote has been set up to run as a daemon service aside Kodi.
 * [Configuration](#configuration)
 * [Usage](#usage)
 * [Documentation](#documentation)
+* [Limitations](#limitations)
 * [License](#license)
 
 ## Project Status
@@ -70,6 +71,10 @@ Navigate to `http://[hostname]:1337/`
 ![alt text][search]
 ![alt text][running]
 ![alt text][description]
+
+## Limitations
+
+RetroArch Remote is currently limited to NES games.
 
 ## License
 
