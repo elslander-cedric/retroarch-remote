@@ -22,4 +22,8 @@ export class ProcessExecution {
       }
     });
   }
+
+  public pid() : number {
+    return this.process.pid;
+  }
 }

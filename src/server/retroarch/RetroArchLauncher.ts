@@ -9,17 +9,21 @@ import { ProcessLauncher }  from '../ProcessLauncher';
 export class RetroArchLauncher implements ProcessLauncher {
 
   public launch(args ?: Array<string>) : Promise<ProcessExecution> {
-    return new Promise((resolve, reject) => {
-      let retroarch =
-        child_process.spawn('/usr/bin/retroarch', args, { stdio: "inherit" })
-          .on('close', (code, signal) => {
-            console.log(`retroarch terminated with code ${code} by signal ${signal}`);
-          })
-          .on('error', (error) => {
-            console.error(`retroarch error ${error}`);
-          });
+    const command = `/usr/bin/retroarch`;
 
-      resolve(new ProcessExecution(retroarch));
-    });
+    let retroarch =
+      child_process.spawn(command, args, {
+        stdio: "inherit",
+        detached: false,
+        shell: false
+      }).on('close', (code, signal) => {
+          console.log(`retroarch closed with code ${code} due to signal ${signal}`);
+      }).on('exit', (code, signal) => {
+          console.log(`retroarch exited with code ${code} due to signal ${signal}`);
+      }).on('error', (error) => {
+          console.error(`retroarch error ${error}`);
+      });
+
+    return Promise.resolve(new ProcessExecution(retroarch));
   }
 }

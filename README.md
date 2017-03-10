@@ -1,31 +1,69 @@
-# RetroarchRemote
+# RetroArch Remote
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.24
+RetroArch Remote makes it possible to start your favorite games just from your phone. This comes particularly handy if you're running RetroArch on a system like a media center with no attached keyboard.
 
-## Development server
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+With RetroArch Remote you can look up any games registered on Giant Bomb [www.giantbomb.com](Giant Bomb), add them to your favorites and easily download them from the Internet Archive [https://archive.org/](Internet Archive).
 
-## Code scaffolding
+RetroArch Remote has been set up to run as a daemon service aside Kodi.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+## Prerequisites
 
-## Build
+* Node.js v7.7.1
+* RetroArch
+* Giant Bomb API key
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+## Table of Contents
 
-## Running unit tests
+* [Project Status](#project-status)
+* [Supported Devices](#supported-devices)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Usage](#usage)
+* [Documentation](#documentation)
+* [License](#license)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Project Status
 
-## Running end-to-end tests
+This is still playground, so you've been warned ...
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+## Supported Devices
 
-## Deploying to Github Pages
+* Server: Ubuntu 14.04
+* Client: Chrome
 
-Run `ng github-pages:deploy` to deploy to Github Pages.
+## Installation
 
-## Further help
+**BEFORE YOU INSTALL:** please read the [prerequisites](#prerequisites)
+```bash
+npm install retroarch-remote
+```
 
-To get more help on the `angular-cli` use `ng help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Configuration
+
+### Giant Bomb API Key
+
+Get one from http://www.giantbomb.com/api/
+
+Make a config.json in retroarch-remote folder with:
+
+```
+{
+  "giantbombAPIKey": "",
+  "downloadDir": "/path/to/my/downloads",
+  "port": 1337,
+  "kodi": true,
+  "kodiRPCPort": 8084,
+  "kodiRPCUser": "KODY USER",
+  "kodiRPCPassword": "KODY PASSWORD"
+}
+```
+
+## Usage
+
+Navigate to `http://[hostname]:1337/`
+
+## Documentation
+
+## License
+
+MIT

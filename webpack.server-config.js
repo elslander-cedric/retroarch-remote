@@ -6,7 +6,7 @@ module.exports = {
   target: 'node',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: 'retroarch-remote.js'
   },
   resolve: {
     extensions: [".ts", ".js"],

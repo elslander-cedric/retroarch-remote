@@ -28,7 +28,7 @@ export class Server {
       new GameTaskRunner(config,
         new RetroArchLauncher(),
         new KodiLauncher(),
-        new KodiRPCCommandExecutor()),
+        new KodiRPCCommandExecutor(config)),
       new GiantBombAPIService(config));
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
@@ -49,7 +49,7 @@ export class Server {
       }
     });
 
-    this.server.listen(1337);
+    this.server.listen(config.get("port"));
     console.log("server listening");
   }
 

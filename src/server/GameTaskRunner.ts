@@ -19,6 +19,7 @@ export class GameTaskRunner {
   private kodiLauncher : KodiLauncher;
 
   private retroArchProcessExecution : ProcessExecution;
+  private kodiProcessExecution : ProcessExecution;
 
   constructor(
     config : Config,
@@ -37,18 +38,57 @@ export class GameTaskRunner {
       path.resolve(this.config.get("downloadDir"), `${game.id}`)
     ];
 
+    // TODO-FIXME: to be tested
+    // TODO-FIXME: check if config('kodi') === true
+
+    console.log(`try to stop kodi`);
     return this.kodiRPCCommandExecutor.stop()
-      .delay(2000)
-      .then(() => this.retroArchProcessExecution && this.retroArchProcessExecution.stop())
-      .then(() => this.retroArchProcessExecution = this.retroArchLauncher.launch(retroArchArgs))
-      .catch((err) => { console.error(`launch error: ${err}`); });
+      .then((result) => console.log(`kodi stop ok: ${result}`))
+      .catch((err) => console.error(`kodi stop error: ${err}`))
+      .delay(3000)
+      .then(() => {
+        console.log(`try to stop retroarch`);
+        return this.retroArchProcessExecution.stop();
+      })
+      .then((result) => console.log(`retroarch stop ok: ${result}`))
+      .catch((err) => console.error(`retroarch stop error: ${err}`))
+      .delay(3000)
+      .then(() => {
+        console.log(`try to start retroarch`);
+        return this.retroArchLauncher.launch(retroArchArgs);
+      })
+      .then((retroArchProcessExecution: ProcessExecution) => {
+        console.log(`retroarch was started, pid: ${retroArchProcessExecution.pid()}`);
+        this.retroArchProcessExecution = retroArchProcessExecution;
+        return this.retroArchProcessExecution;
+      })
+      .catch((err) => console.error(`retroarch launch error: ${err}`));
+
   }
 
   public stop(game : Game) : Promise<any|void> {
-    return this.retroArchProcessExecution && this.retroArchProcessExecution.stop()
-      .then(() => this.retroArchProcessExecution = undefined)
-      .then(() => this.kodiLauncher.launch())
-      .catch((err) => { console.error(`stop error: ${err}`); });
+    // TODO-FIXME: to be tested
+    // TODO-FIXME: check if config('kodi') === true
+    const kodiArgs = ['-nocursor', ':0'];
+
+    return Promise
+      .try(() => {
+        console.log(`try to stop retroarch`);
+        return this.retroArchProcessExecution.stop();
+      })
+      .then((result) => console.log(`retroarch stop result: ${result}`))
+      .catch((err) => console.error(`retroarch stop error: ${err}`))
+      .delay(3000)
+      .then(() => {
+        console.log(`try to launch kodi`);
+        return this.kodiLauncher.launch(kodiArgs);
+      })
+      .then((kodiProcessExecution: ProcessExecution) => {
+          console.log(`kodi was started`);
+          this.kodiProcessExecution = kodiProcessExecution;
+          return this.kodiProcessExecution;
+      })
+      .catch((err) => console.error(`kodi launch error: ${err}`));
   }
 
   public download(game : Game) : Promise<string|void> {

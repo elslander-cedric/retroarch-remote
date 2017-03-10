@@ -2,20 +2,27 @@ import * as http from "http";
 
 import { Promise } from 'bluebird';
 
+import { Config } from '../Config';
+
 export class KodiRPCCommandExecutor {
+  private config : Config;
+
+  constructor(config : Config) {
+      this.config = config;
+  }
 
   public stop() : Promise<string> {
     return new Promise((resolve, reject) => {
       const options = {
         hostname: 'localhost',
-        port: 8084,
+        port: this.config.get('kodiRPCPort'),
         path: '/jsonrpc',
         method: 'POST',
         headers: {
           'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
           'Content-Type': 'application/json'
         },
-        auth: 'xbmc:xbmc'
+        auth: `${this.config.get('kodiRPCUser')}:${this.config.get('kodiRPCPassword')}`
       };
 
       let request =
