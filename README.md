@@ -46,7 +46,7 @@ Get one from http://www.giantbomb.com/api/
 
 Make a config.json in retroarch-remote folder with:
 
-```
+```javascript
 {
   "giantbombAPIKey": "",
   "downloadDir": "/path/to/my/downloads",
@@ -64,6 +64,18 @@ Navigate to `http://[hostname]:1337/`
 
 ## Documentation
 
+### Screenshots
+
+![alt text][dashboard]
+![alt text][search]
+![alt text][running]
+![alt text][description]
+
 ## License
 
 MIT
+
+[dashboard]: /doc/img/dashboard.png "Dashboard"
+[search]: /doc/img/search.png "Search"
+[running]: /doc/img/running.png "Running"
+[description]: /doc/img/description.png "Description"
