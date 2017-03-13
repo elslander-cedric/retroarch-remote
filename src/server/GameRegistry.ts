@@ -14,12 +14,16 @@ export class GameRegistry {
   constructor() {};
 
   public init() : GameRegistry {
-    fs.readFile(GameRegistry.path, {
-      encoding: GameRegistry.fileEncoding,
-      flag: 'r+'
-    }, (err, data) => {
-      if (err) throw err;
-      this.games = JSON.parse(data);
+    let that = this;
+
+    fs.exists(GameRegistry.path, function(exists) {
+      fs.readFile(GameRegistry.path, {
+        encoding: GameRegistry.fileEncoding,
+        flag: exists ? 'r+' : 'w+'
+      }, (err, data) => {
+        if (err) throw err;
+        that.games = JSON.parse(data || '[]');
+      });
     });
 
     return this;

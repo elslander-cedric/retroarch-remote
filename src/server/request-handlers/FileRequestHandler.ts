@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
+import * as mime from 'mime';
 
 import { RequestHandler } from "./RequestHandler";
 
@@ -10,45 +11,33 @@ export class FileRequestHandler implements RequestHandler {
 
   constructor() {};
 
-  public preHandle(request: IncomingMessage, response: ServerResponse): void {
-    response.setHeader('Content-Type', 'text/html');
-  }
+  public preHandle(request: IncomingMessage, response: ServerResponse): void {}
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
-    this.preHandle(request, response);
+    var uri = url.parse(request.url).pathname;
 
-    let pathname = url.parse(request.url).pathname;
+    if (uri === '/') { // defaults to /index.html
+      // uri = '/index.html';
 
-    if (pathname === '/') { // defaults to /index.html
-      pathname = '/index.html';
-    }
-
-    /*    
-    if (pathname === '/') { // redirect to /index.html
       response.writeHead(302, {
         'Location': '/index.html'
       });
-      this.postHandle(request, response);
+      response.end();
       return;
     }
-    */
 
-    pathname = pathname.slice(1); // omit leading '/'
+    let filename = path.join(process.cwd(), uri);
+    fs.exists(filename, function(exists) {
+        response.statusCode = exists ? 200 : 404;
+        response.setHeader('Content-Type', mime.lookup(filename));
 
-    fs.readFile(pathname, {}, (err, data) => {
-      response.statusCode = err ? 404 : 200;
-
-      if (err) {
-        response.statusMessage = err.message;
-      } else {
-        response.write(data.toString());
-      }
-
-      this.postHandle(request, response);
+        if(exists){
+          fs.createReadStream(filename).pipe(response);
+        } else {
+          response.end();
+        }
     });
   }
 
-  public postHandle(request: IncomingMessage, response: ServerResponse): void {
-    response.end();
-  }
+  public postHandle(request: IncomingMessage, response: ServerResponse): void {}
 }

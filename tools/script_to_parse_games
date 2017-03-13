@@ -1,0 +1,1 @@
+cat NES_ZachMorris.xml | grep -P "No-Intro-Collection|3030-" | sed -r -e "s/.*(\"No-Intro-Collection.*?.zip\").*/{\"downloadUrl\":\1,/" -e "s/.*3030-(.*)\/<.*/\"id\":\1},/" | sed -r -e "/.*No-Intro-Collection.*/ {N;/\n.*\"id\"/P;D}"

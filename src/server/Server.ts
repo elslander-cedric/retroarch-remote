@@ -1,3 +1,5 @@
+require("../../library.json");
+
 import { IncomingMessage, ServerResponse } from "http";
 
 import * as http from "http";

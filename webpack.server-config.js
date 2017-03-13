@@ -14,7 +14,8 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      { test: /\.tsx?$/, loader: "ts-loader" },
+      { test: /library.json$/, loader: "file-loader?name=[path][name].[ext]" }
     ]
   },
   externals: { natives: 'commonjs natives' },
