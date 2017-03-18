@@ -3,12 +3,11 @@ export class Game {
   public name;
   public summary;
   public description;
+  public platform;
   public platforms;
   public image;
   public rating;
   public releasedate;
-  public downloaded;
-  public running;
   public downloadUrl;
 
   constructor() {}

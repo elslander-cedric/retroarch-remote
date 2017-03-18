@@ -6,6 +6,7 @@ import * as unzip from 'unzip';
 import { Promise } from 'bluebird';
 
 import { Game } from './Game';
+import { Platform } from "./Platform";
 import { Config } from './Config';
 import { KodiRPCCommandExecutor } from './kodi/KodiRPCCommandExecutor';
 import { RetroArchLauncher } from './retroarch/RetroArchLauncher';
@@ -33,16 +34,27 @@ export class GameTaskRunner {
   }
 
   public launch(game : Game) : Promise<any|void> {
+    let emulator = '/usr/lib/libretro/';
+
+    switch(game.platform) {
+        case Platform.NES:
+          emulator += 'nestopia_libretro.so';
+          break;
+        case Platform.N64:
+          emulator += 'mupen64plus_libretro.so';
+    }
+
     const retroArchArgs = [
-      '-L', '/usr/lib/libretro/nestopia_libretro.so',
+      '-L',
+      emulator,
       path.resolve(this.config.get("downloadDir"), `${game.id}`)
     ];
 
-    // TODO-FIXME: to be tested
     // TODO-FIXME: check if config('kodi') === true
-
-    console.log(`try to stop kodi`);
-    return this.kodiRPCCommandExecutor.stop()
+    return this.download(game)
+      .then((result) => console.log(`game downloaded ok: ${result}`))
+      .catch((err) => console.error(`game downloaded error: ${err}`))
+      .then(() => this.kodiRPCCommandExecutor.stop())
       .then((result) => console.log(`kodi stop ok: ${result}`))
       .delay(3000)
       .catch((err) => console.error(`kodi stop error: ${err}`))

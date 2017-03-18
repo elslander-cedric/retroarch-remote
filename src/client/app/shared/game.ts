@@ -4,11 +4,10 @@ export class Game {
   private _summary : string;
   private _description: string;
   private _image: string;
+  private _platform: number;
   private _platforms: string;
   private _rating : string;
   private _releasedate : string;
-  private _downloaded : boolean;
-  private _running : boolean;
 
   get id() : number {
     return this._id;
@@ -50,6 +49,14 @@ export class Game {
     this._image = image;
   }
 
+  get platform() : number {
+    return this.platform;
+  }
+
+  set platform(platform : number) {
+    this._platform = platform;
+  }
+
   get platforms() : string {
     return this.platforms;
   }
@@ -72,21 +79,5 @@ export class Game {
 
   set releasedate(releasedate : string) {
     this._releasedate = releasedate;
-  }
-
-  get downloaded() : boolean {
-    return this._downloaded;
-  }
-
-  set downloaded(downloaded : boolean) {
-    this._downloaded = downloaded;
-  }
-
-  get running() : boolean {
-    return this._running;
-  }
-
-  set running(running : boolean) {
-    this._running = running;
   }
 }

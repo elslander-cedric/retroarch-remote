@@ -1,4 +1,5 @@
-require("../../library.json");
+require("../../library.NES.json");
+require("../../library.N64.json");
 
 import { IncomingMessage, ServerResponse } from "http";
 

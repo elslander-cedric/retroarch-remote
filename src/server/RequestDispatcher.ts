@@ -10,7 +10,6 @@ import { Config } from "./Config";
 
 import { FileRequestHandler } from "./request-handlers/FileRequestHandler";
 import { GameListRequestHandler } from "./request-handlers/GameListRequestHandler";
-import { GameTopRatedRequestHandler } from "./request-handlers/GameTopRatedRequestHandler";
 import { GameAvailableRequestHandler } from "./request-handlers/GameAvailableRequestHandler";
 import { GameMostPopularRequestHandler } from "./request-handlers/GameMostPopularRequestHandler";
 import { GameDownloadRequestHandler } from "./request-handlers/GameDownloadRequestHandler";
@@ -18,6 +17,7 @@ import { GameLaunchRequestHandler } from "./request-handlers/GameLaunchRequestHa
 import { GameStopRequestHandler } from "./request-handlers/GameStopRequestHandler";
 import { GameSearchRequestHandler } from "./request-handlers/GameSearchRequestHandler";
 import { GameAddRequestHandler } from "./request-handlers/GameAddRequestHandler";
+import { GameUpdateRequestHandler } from "./request-handlers/GameUpdateRequestHandler";
 import { GameDeleteRequestHandler } from "./request-handlers/GameDeleteRequestHandler";
 
 export class RequestDispatcher {
@@ -32,13 +32,13 @@ export class RequestDispatcher {
       .addHandler('/', new FileRequestHandler())
       .addHandler('/games/list/', new GameListRequestHandler(gameRegistry))
       .addHandler('/games/most-popular/', new GameMostPopularRequestHandler(GiantBombAPIService))
-      .addHandler('/games/top-rated/', new GameTopRatedRequestHandler(GiantBombAPIService))
       .addHandler('/games/available/', new GameAvailableRequestHandler(gameLibrary, GiantBombAPIService))
       .addHandler('/games/download/', new GameDownloadRequestHandler(gameLibrary, gameTaskRunner))
       .addHandler('/games/launch/', new GameLaunchRequestHandler(gameTaskRunner))
       .addHandler('/games/stop/', new GameStopRequestHandler(gameTaskRunner))
       .addHandler('/games/search/', new GameSearchRequestHandler(GiantBombAPIService))
       .addHandler('/games/add/', new GameAddRequestHandler(gameRegistry))
+      .addHandler('/games/update/', new GameUpdateRequestHandler(gameRegistry))
       .addHandler('/games/delete/', new GameDeleteRequestHandler(gameRegistry));
   };
 

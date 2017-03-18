@@ -14,19 +14,48 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 export class DashboardComponent implements OnInit, OnDestroy {
   public games : Game[] = [];
+  
+  public filters = [
+    {
+      name: 'NES',
+      type: 'platform',
+      matcher: 21,
+      selected: true
+    },{
+      name: 'N64',
+      type: 'platform',
+      matcher: 43,
+      selected: true
+    },{
+      name: 'two player',
+      type: 'multiplayer',
+      matcher: true,
+      selected: true
+    }
+  ];
 
   constructor(private gameService: GameService, private modalService: NgbModal) {};
 
   public ngOnInit(): void {
-    this.gameService.subscribe(this, () => { this.update(); });
-    this.update();
+    this.gameService.subscribe(this, () => { this.list(); });
+    this.list();
   }
 
   public ngOnDestroy() : void {
     this.gameService.unsubscribe(this);
   }
 
-  public update() : void {
+  public update(game : Game) : void {
+    console.log("update game:", game.name);
+
+    if(!game.rating) return;
+
+    this.gameService.update(game)
+      .then((_game : Game) => console.log("successfully updated game: %s", game.name))
+      .catch((err : never) => this.onUserError(`error occured while updating game: ${err}`));
+  }
+
+  public list() : void {
     console.log("updating list of games");
     this.gameService.getGames()
       .then((games : Array<Game>) => {

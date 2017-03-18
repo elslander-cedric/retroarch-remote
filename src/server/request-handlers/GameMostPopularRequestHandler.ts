@@ -5,6 +5,8 @@ import * as url from 'url';
 import { JsonRequestHandler } from "./JsonRequestHandler";
 import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
 import { Game } from "../Game";
+import { Platform } from "../Platform";
+
 export class GameMostPopularRequestHandler extends JsonRequestHandler {
   private GiantBombAPIService : GiantBombAPIService;
 
@@ -20,7 +22,7 @@ export class GameMostPopularRequestHandler extends JsonRequestHandler {
     let offset = requestUrl.query['offset'];
     let limit = requestUrl.query['limit'];
 
-    this.GiantBombAPIService.mostPopular(offset, limit)
+    this.GiantBombAPIService.mostPopular(offset, limit, [Platform.NES, Platform.N64])
       .toPromise()
       .then((games : Game []) => {
         response.statusCode = 200;

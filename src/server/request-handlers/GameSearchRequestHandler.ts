@@ -5,6 +5,7 @@ import * as url from 'url';
 import { JsonRequestHandler } from "./JsonRequestHandler";
 import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
 import { Game } from "../Game";
+import { Platform } from "../Platform";
 
 export class GameSearchRequestHandler extends JsonRequestHandler {
   private GiantBombAPIService : GiantBombAPIService;
@@ -20,7 +21,7 @@ export class GameSearchRequestHandler extends JsonRequestHandler {
     let requestUrl : Url = url.parse(request.url, true);
     let name = requestUrl.query['name'];
 
-    this.GiantBombAPIService.searchByName(name)
+    this.GiantBombAPIService.searchByName(name, [Platform.NES, Platform.N64])
       .toPromise()
       .then((games : Game []) => {
         response.statusCode = 200;

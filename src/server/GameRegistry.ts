@@ -46,6 +46,18 @@ export class GameRegistry {
     });
   }
 
+  public update(game : Game) : Promise<any|void> {
+    let _game : Game = this.games.find(__game => __game.id === game.id);
+
+    for(let property in game) {
+        if (game.hasOwnProperty(property)) {
+            _game[property] = game[property];
+        }
+    }
+
+    return this.save();
+  }
+
   public addFavorite(game : Game) : Promise<any|void> {
     if(this.games.find(_game => _game.id === game.id)) {
       return Promise.reject("game already in list");

@@ -10,13 +10,15 @@ export class GameLibrary {
   constructor() {};
 
   public init() : GameLibrary {
-    fs.readFile('library.json', {
+    const libraries = ['library.NES.json', 'library.N64.json'];
+
+    libraries.forEach(library => fs.readFile(library, {
       encoding: GameLibrary.fileEncoding,
       flag: 'r+'
     }, (err, data) => {
       if (err) throw err;
-      this._games = JSON.parse(data);
-    });
+      this._games = this._games.concat(JSON.parse(data));
+    }));
 
     return this;
   }

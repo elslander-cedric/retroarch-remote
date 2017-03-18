@@ -1,6 +1,25 @@
 <game-search></game-search>
 
-<md-card *ngFor="let game of games;trackBy:game?.id" fxLayout="column">
+<!--
+TODO-FIXME: menu with:
+  - bring up retroarch menu
+  - exec command save/load state of game
+  - ext/start kodi
+-->
+<md-chip-list>
+  <md-chip *ngFor="let filter of filters"
+  [color]="'primary'"
+  [disabled]="filter.disabled"
+  [selected]="filter.selected"
+  (click)="filter.selected = !filter.selected">{{ filter.name }}</md-chip>
+</md-chip-list>
+
+<md-card *ngFor="let game of games | gameFilter:filters | gameSort; trackBy:game?.id" fxLayout="column">
+  <ngb-rating max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
+
+  <!-- TODO-FIXME: play button -->
+  <!-- TODO-FIXME: delete button -->
+
   <div fxLayout="row" fxLayoutAlign="start end">
     <md-card-header fxLayout="row" fxFlex="95%">
       <img md-card-avatar src="{{ game.image }}">
@@ -19,7 +38,6 @@
         <md-icon>file_download</md-icon>
         <span>Download</span>
       </button>
-      <!-- <button md-menu-item [disabled]="!game.downloaded" (click)="launch(game)"> -->
       <button md-menu-item (click)="launch(game)">
         <md-icon>launch</md-icon>
         <span>Start</span>
@@ -35,9 +53,15 @@
     </md-menu>
   </div>
   <md-card-content>{{ game.summary }}</md-card-content>
+
+  <div [ngClass]="['md-card-footer']" fxLayout="row" fxLayoutAlign="end">
+    <button md-icon-button>
+      <md-icon>delete</md-icon>
+    </button>
+  </div>
 </md-card>
 
 <br/>
-<top-rated></top-rated>
+
 <suggestions></suggestions>
 <available></available>

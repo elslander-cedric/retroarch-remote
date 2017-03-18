@@ -51,16 +51,6 @@ export class GameService {
       .catch(this.handleError)
   }
 
-  public getTopRated(offset, limit) : Promise<Game[]> {
-    const url = `${this.baseUrl}/top-rated/?offset=${offset}&limit=${limit}`;
-
-    return this.http
-      .get(url)
-      .toPromise()
-      .then(response => response.json().data as Game[])
-      .catch(this.handleError)
-  }
-
   public getMostPopular(offset, limit) : Promise<Game[]> {
     const url = `${this.baseUrl}/most-popular/?offset=${offset}&limit=${limit}`;
 
@@ -76,6 +66,7 @@ export class GameService {
 
     let params = new URLSearchParams();
     params.set('id', `${game.id}`);
+    params.set('platform', `${game.platform}`);
 
     let options = new RequestOptions({
       search: params
@@ -150,6 +141,21 @@ export class GameService {
       .then(() => {
         this.eventEmitter.next(game);
       })
+      .catch(this.handleError);
+  }
+
+  public update(game: Game) : Promise<Game | any> {
+    const url = `${this.baseUrl}/update/`;
+
+    let options = new RequestOptions({
+      method: RequestMethod.Post,
+      url: url,
+      body: JSON.stringify(game)
+    });
+
+    return this.http
+      .request(new Request(options))
+      .toPromise()
       .catch(this.handleError);
   }
 

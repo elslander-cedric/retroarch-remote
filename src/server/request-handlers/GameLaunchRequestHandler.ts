@@ -20,7 +20,11 @@ export class GameLaunchRequestHandler extends JsonRequestHandler {
 
     let requestUrl : Url = url.parse(request.url, true);
     let id = requestUrl.query['id'];
-    let game : Game = { id: parseInt(id) } as Game;
+    let platform = requestUrl.query['platform'];
+    let game : Game = {
+      id: parseInt(id),
+      platform:  parseInt(platform)
+    } as Game;
 
     this.gameTaskRunner.launch(game)
       .then((game: Game) => {

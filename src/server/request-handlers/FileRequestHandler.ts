@@ -11,27 +11,43 @@ export class FileRequestHandler implements RequestHandler {
 
   constructor() {};
 
-  public preHandle(request: IncomingMessage, response: ServerResponse): void {}
+  public preHandle(request: IncomingMessage, response: ServerResponse): void {
+    let uri = url.parse(request.url).pathname;
+
+    // TODO-FIXME: index.html is visible in browser url with this :(
+    if (uri === '/') { // redirect to /index.html
+      response.writeHead(302, { 'Location': '/index.html' });
+      response.end();
+    }
+  }
 
   public handle(request: IncomingMessage, response: ServerResponse): void {
-    var uri = url.parse(request.url).pathname;
+    this.preHandle(request, response);
 
-    if (uri === '/') { // defaults to /index.html
-      // uri = '/index.html';
+    if(response.finished) { return; }
 
-      response.writeHead(302, {
-        'Location': '/index.html'
-      });
-      response.end();
-      return;
-    }
-
+    let uri = url.parse(request.url).pathname;
     let filename = path.join(process.cwd(), uri);
+
     fs.exists(filename, function(exists) {
         response.statusCode = exists ? 200 : 404;
-        response.setHeader('Content-Type', mime.lookup(filename));
 
         if(exists){
+          let lastModified = fs.statSync(filename).mtime;
+
+          response.setHeader('Content-Type', mime.lookup(filename));
+          response.setHeader("Last-Modified", lastModified.toUTCString());
+
+          let ifModifiedSince = request.headers["if-modified-since"];
+
+          if(ifModifiedSince) {
+            if(Math.floor(new Date(ifModifiedSince).getTime()/1000) === Math.floor(lastModified.getTime()/1000)){
+              response.statusCode = 304;
+            }
+          }
+        }
+
+        if(response.statusCode === 200) {
           fs.createReadStream(filename).pipe(response);
         } else {
           response.end();

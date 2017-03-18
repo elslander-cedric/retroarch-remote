@@ -14,7 +14,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { GameSearchComponent } from './components/game-search/game-search.component';
-import { TopRatedComponent } from './components/top-rated/top-rated.component';
 import { SuggestionsComponent } from './components/suggestions/suggestions.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
@@ -23,19 +22,22 @@ import { GameService, DefaultRequestOptions } from "./services/game.service";
 import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig";
 import { GameOverviewModalComponent } from './components/game-overview-modal/game-overview-modal.component';
 import { AvailableComponent } from './components/available/available.component';
+import { GameFilterPipe } from './pipes/game-filter/game-filter.pipe';
+import { GameSortPipe } from './pipes/game-sort/game-sort.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     GameSearchComponent,
-    TopRatedComponent,
     SuggestionsComponent,
     ConfirmModalComponent,
     CarouselComponent,
     CarouselSlideComponent,
     GameOverviewModalComponent,
-    AvailableComponent
+    AvailableComponent,
+    GameFilterPipe,
+    GameSortPipe
   ],
   entryComponents: [
     ConfirmModalComponent,

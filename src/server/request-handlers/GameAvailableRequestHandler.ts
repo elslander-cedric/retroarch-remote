@@ -8,6 +8,7 @@ import { JsonRequestHandler } from "./JsonRequestHandler";
 import { GameLibrary } from "../GameLibrary";
 import { GiantBombAPIService } from "../giantbomb/GiantBombAPIService";
 import { Game } from "../Game";
+import { Platform } from "../Platform";
 
 export class GameAvailableRequestHandler extends JsonRequestHandler {
   private gameLibrary : GameLibrary;
@@ -36,7 +37,7 @@ export class GameAvailableRequestHandler extends JsonRequestHandler {
       this.gameLibrary.games.slice(offset, parseInt(offset) + parseInt(limit));
 
     Observable.from(dwnlGames.map((game : Game) => game.id))
-      .concatMap((id : number) => this.GiantBombAPIService.searchById(id))
+      .concatMap((id : number) => this.GiantBombAPIService.searchById(id, [Platform.NES, Platform.N64]))
       .reduce((acc: Game[], value: Game[]) => acc.concat(value))
       .toPromise()
       .then((games : Game []) => {

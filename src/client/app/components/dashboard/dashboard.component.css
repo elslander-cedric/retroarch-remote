@@ -7,6 +7,8 @@ md-card-content {
   padding-top: 20px;
 }
 
+md-card-footer {}
+
 md-card-subtitle div, md-card-title div {
   white-space: nowrap;
   overflow: hidden;
