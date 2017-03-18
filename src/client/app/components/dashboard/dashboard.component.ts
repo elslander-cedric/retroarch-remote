@@ -14,7 +14,7 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
 export class DashboardComponent implements OnInit, OnDestroy {
   public games : Game[] = [];
-  
+
   public filters = [
     {
       name: 'NES',
@@ -46,9 +46,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public update(game : Game) : void {
-    console.log("update game:", game.name);
-
     if(!game.rating) return;
+
+    console.log("update game:", game.name);
 
     this.gameService.update(game)
       .then((_game : Game) => console.log("successfully updated game: %s", game.name))

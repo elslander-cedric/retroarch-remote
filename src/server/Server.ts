@@ -11,6 +11,7 @@ import { GameLibrary } from "./GameLibrary";
 import { GameTaskRunner } from "./GameTaskRunner";
 import { KodiRPCCommandExecutor } from './kodi/KodiRPCCommandExecutor';
 import { RetroArchLauncher } from './retroarch/RetroArchLauncher';
+import { RetroArchUDPCommandExecutor } from './retroarch/RetroArchUDPCommandExecutor';
 import { KodiLauncher } from './kodi/KodiLauncher';
 import { RequestDispatcher } from "./RequestDispatcher";
 import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
@@ -32,7 +33,8 @@ export class Server {
         new RetroArchLauncher(),
         new KodiLauncher(),
         new KodiRPCCommandExecutor(config)),
-      new GiantBombAPIService(config));
+      new GiantBombAPIService(config),
+      new RetroArchUDPCommandExecutor(config));
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
       console.log("[%s] - %s", request.method, request.url);

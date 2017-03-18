@@ -1,3 +1,7 @@
+button {
+  padding-right: 20px;
+}
+
 .game-search-input {
   width: 150%;
 }
@@ -9,8 +13,7 @@
 }
 
 .game-search-item-container {
-  width: 260px;
-  margin-right: 20px;
+  width: 220px;
 }
 
 .game-search-item-description {

@@ -1,5 +1,8 @@
-<md-toolbar [ngClass]="['md-primary','md-hue-1']">
-  <input
+<md-toolbar [ngClass]="['md-primary','md-hue-1']" flexLayout="column">
+  <button md-icon-button [mdMenuTriggerFor]="menu" >
+    <md-icon>menu</md-icon>
+  </button>
+  <input fxFlex
     type="text"
     focusFirst
     showHint
@@ -25,8 +28,19 @@
       <div [ngClass]="['game-search-item-title']">{{ r.name }}</div>
       <div [ngClass]="['game-search-item-platform']">{{ r.platforms }}</div>
     </div>
-    <button md-mini-fab (click)="addGame(r)">
-      <md-icon [ngClass]="['md-18']">add</md-icon>
+    <button md-icon-button (click)="addGame(r)">
+      <md-icon [ngClass]="['md-18']">add_circle_outline</md-icon>
     </button>
   </div>
 </template>
+
+<md-menu x-position="after" y-position="below" #menu="mdMenu">
+  <button md-menu-item (click)="retrarchCmd('MENU_TOGGLE')">
+    <md-icon>menu</md-icon>
+    <span>Menu</span>
+  </button>
+  <button md-menu-item (click)="exit()">
+    <md-icon>stop</md-icon>
+    <span>Exit</span>
+  </button>
+</md-menu>

@@ -15,23 +15,28 @@ TODO-FIXME: menu with:
 </md-chip-list>
 
 <md-card *ngFor="let game of games | gameFilter:filters | gameSort; trackBy:game?.id" fxLayout="column">
-  <ngb-rating max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
-
-  <!-- TODO-FIXME: play button -->
-  <!-- TODO-FIXME: delete button -->
+  <div fxLayout="row" fxLayoutAlign="start end">
+    <ngb-rating fxFlex max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
+    <button md-icon-button (click)="remove(game)">
+      <md-icon>closed</md-icon>
+    </button>
+  </div>
 
   <div fxLayout="row" fxLayoutAlign="start end">
     <md-card-header fxLayout="row" fxFlex="95%">
       <img md-card-avatar src="{{ game.image }}">
+      <img [ngClass]="['play']" src="img/play.png" (click)="launch(game)">
       <div fxLayout="column" fxFlex="80%">
         <md-card-title><div>{{ game.name }}</div></md-card-title>
         <md-card-subtitle><div>{{ game.platforms }}</div></md-card-subtitle>
       </div>
     </md-card-header>
 
+    <!--
     <button md-icon-button [mdMenuTriggerFor]="menu" fxFlex>
       <md-icon>more_vert</md-icon>
     </button>
+    -->
 
     <md-menu x-position="before" y-position="below" #menu="mdMenu">
       <button md-menu-item (click)="download(game)">
@@ -53,12 +58,6 @@ TODO-FIXME: menu with:
     </md-menu>
   </div>
   <md-card-content>{{ game.summary }}</md-card-content>
-
-  <div [ngClass]="['md-card-footer']" fxLayout="row" fxLayoutAlign="end">
-    <button md-icon-button>
-      <md-icon>delete</md-icon>
-    </button>
-  </div>
 </md-card>
 
 <br/>

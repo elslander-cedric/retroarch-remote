@@ -171,6 +171,15 @@ export class GameService {
       .catch(this.handleError);
   }
 
+  public retrarchCommand(command : string) : Promise<any> {
+    const url = `/retroarch/?command=${command}`;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .catch(this.handleError);
+  }
+
   private handleError(response: Response | any) : Promise<any> {
     let errMsg: string;
 

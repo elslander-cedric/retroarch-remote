@@ -55,6 +55,18 @@ export class GameSearchComponent {
       .catch((err : never) => this.onUserError(`error occured while adding game: ${err}`));
   }
 
+  public retrarchCmd(command : string) : void {
+    this.gameService.retrarchCommand(command)
+      .then(() => console.log("successfully executed command: %s", command))
+      .catch((err : never) => this.onUserError(`error occured while executing command: ${err}`));
+  }
+
+  public exit() : void {
+    this.gameService.stop({ id: null } as Game)
+      .then((_game : Game) => console.log("successfully stopped game: %s", _game.name))
+      .catch((err : never) => this.onUserError(`error occured while stopping game: ${err}`));
+  }
+
   public onUserError(error : string) : void {
     console.log("open confirm modal");
     const modalRef = this.modalService.open(ConfirmModalComponent);

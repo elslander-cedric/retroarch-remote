@@ -11,14 +11,16 @@ export class RetroArchUDPCommandExecutor {
       this.config = config;
   }
 
-  public send(command : RetroArchUDPCommand) : Promise<string> {
+  public send(command : string) : Promise<string> {
+    console.log(`send command ${command}`)
+
     return new Promise((resolve, reject) => {
       const client = dgram.createSocket('udp4');
 
-      client.send(RetroArchUDPCommand[command], this.config.get('retroarchUDPPort'), 'localhost', (err) => {
+      client.send(command, this.config.get('retroarchUDPPort'), 'localhost', (err) => {
         if(err){
           console.error(`could not send UDP command: ${err}`);
-        }        
+        }
         client.close();
       });
     });

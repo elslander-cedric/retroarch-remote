@@ -3,11 +3,24 @@ md-card {
   margin: 20px 10px 20px 10px;
 }
 
+ngb-rating {
+    padding-bottom: 15px;
+}
+
+md-chip {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.play {
+  position: absolute;
+  opacity: .6;
+  height: 40px;
+}
+
 md-card-content {
   padding-top: 20px;
 }
-
-md-card-footer {}
 
 md-card-subtitle div, md-card-title div {
   white-space: nowrap;

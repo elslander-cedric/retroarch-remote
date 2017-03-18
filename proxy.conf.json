@@ -4,5 +4,11 @@
       "port": 1337
     },
     "secure": false
+  },
+  "/retroarch": {
+    "target": {
+      "port": 1337
+    },
+    "secure": false
   }
 }

@@ -3,6 +3,7 @@ import * as url from 'url';
 
 import { RequestProcessor } from "./RequestProcessor";
 import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
+import { RetroArchUDPCommandExecutor } from "./retroarch/RetroArchUDPCommandExecutor";
 import { GameRegistry } from "./GameRegistry";
 import { GameLibrary } from "./GameLibrary";
 import { GameTaskRunner } from "./GameTaskRunner";
@@ -19,6 +20,7 @@ import { GameSearchRequestHandler } from "./request-handlers/GameSearchRequestHa
 import { GameAddRequestHandler } from "./request-handlers/GameAddRequestHandler";
 import { GameUpdateRequestHandler } from "./request-handlers/GameUpdateRequestHandler";
 import { GameDeleteRequestHandler } from "./request-handlers/GameDeleteRequestHandler";
+import { RetroArchCommandRequestHandler } from "./request-handlers/RetroArchCommandRequestHandler"
 
 export class RequestDispatcher {
   private requestProcessor : RequestProcessor;
@@ -27,19 +29,21 @@ export class RequestDispatcher {
     gameRegistry : GameRegistry,
     gameLibrary : GameLibrary,
     gameTaskRunner : GameTaskRunner,
-    GiantBombAPIService : GiantBombAPIService) {
+    giantBombAPIService : GiantBombAPIService,
+    retroArchUDPCommandExecutor : RetroArchUDPCommandExecutor) {
     this.requestProcessor = new RequestProcessor()
       .addHandler('/', new FileRequestHandler())
       .addHandler('/games/list/', new GameListRequestHandler(gameRegistry))
-      .addHandler('/games/most-popular/', new GameMostPopularRequestHandler(GiantBombAPIService))
-      .addHandler('/games/available/', new GameAvailableRequestHandler(gameLibrary, GiantBombAPIService))
+      .addHandler('/games/most-popular/', new GameMostPopularRequestHandler(giantBombAPIService))
+      .addHandler('/games/available/', new GameAvailableRequestHandler(gameLibrary, giantBombAPIService))
       .addHandler('/games/download/', new GameDownloadRequestHandler(gameLibrary, gameTaskRunner))
       .addHandler('/games/launch/', new GameLaunchRequestHandler(gameTaskRunner))
       .addHandler('/games/stop/', new GameStopRequestHandler(gameTaskRunner))
-      .addHandler('/games/search/', new GameSearchRequestHandler(GiantBombAPIService))
+      .addHandler('/games/search/', new GameSearchRequestHandler(giantBombAPIService))
       .addHandler('/games/add/', new GameAddRequestHandler(gameRegistry))
       .addHandler('/games/update/', new GameUpdateRequestHandler(gameRegistry))
-      .addHandler('/games/delete/', new GameDeleteRequestHandler(gameRegistry));
+      .addHandler('/games/delete/', new GameDeleteRequestHandler(gameRegistry))
+      .addHandler('/retroarch/', new RetroArchCommandRequestHandler(retroArchUDPCommandExecutor));
   };
 
   public dispatch(request: IncomingMessage, response: ServerResponse) {
