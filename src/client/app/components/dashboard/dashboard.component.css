@@ -7,6 +7,10 @@ ngb-rating {
     padding-bottom: 15px;
 }
 
+ngb-rating:focus, .delete-button:focus {
+    outline: none;
+}
+
 md-chip {
   margin-top: 10px;
   margin-left: 10px;

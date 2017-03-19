@@ -1,5 +1,9 @@
-button {
+.menu-button {
   padding-right: 20px;
+}
+
+.menu-button:focus {
+    outline: none;
 }
 
 .game-search-input {

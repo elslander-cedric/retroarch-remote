@@ -17,7 +17,7 @@ TODO-FIXME: menu with:
 <md-card *ngFor="let game of games | gameFilter:filters | gameSort; trackBy:game?.id" fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="start end">
     <ngb-rating fxFlex max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
-    <button md-icon-button (click)="remove(game)">
+    <button [ngClass]="['delete-button']" md-icon-button (click)="remove(game)">
       <md-icon>closed</md-icon>
     </button>
   </div>
