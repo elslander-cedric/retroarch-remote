@@ -9,8 +9,16 @@ import { Game } from '../../shared/game';
 export class GameFilterPipe implements PipeTransform {
   public transform(games : Game[], filters: any[]): Array<Game> {
     return games.filter((game) => {
-      return filters.find((filter) => {
-        return filter.selected && filter.type === 'platform' && filter.matcher === game.platform;
+      return filters.every((filter) => {
+        switch(filter.matcher) {
+          case 'platform':
+            return filter.selected || filter.value !== game.platform;
+          case 'name':
+            return filter.value === '' || game.name.toLowerCase()
+              .indexOf(filter.value.toLowerCase()) !== -1;
+          default:
+            return true;
+        }
       });
     });
   }

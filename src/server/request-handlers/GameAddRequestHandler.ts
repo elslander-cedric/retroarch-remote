@@ -26,7 +26,7 @@ export class GameAddRequestHandler extends JsonRequestHandler {
     .on('end', () => {
       let game : Game = JSON.parse(Buffer.concat(requestBody).toString());
 
-      this.gameRegistry.addFavorite(game)
+      this.gameRegistry.add(game)
         .then((game: Game) => {
           response.statusCode = 200; // ok
           this.postHandle(request, response);

@@ -12,6 +12,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
 import { GameService } from "../../services/game.service";
+import { WebSocketService } from "../../services/websocket.service";
 import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
@@ -21,12 +22,17 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
   styleUrls: ['./game-search.component.css']
 })
 
-export class GameSearchComponent {
+export class GameSearchComponent implements OnInit {
   public model: any;
   public searching : boolean = false;
   public searchFailed : boolean = false;
 
-  constructor(private gameService : GameService, private modalService: NgbModal){};
+  constructor(
+    private gameService : GameService,
+    private webSocketService : WebSocketService,
+    private modalService: NgbModal){};
+
+  ngOnInit() {}
 
   public resultFormatter = (game: Game) => game.name;
 
@@ -56,13 +62,13 @@ export class GameSearchComponent {
   }
 
   public retrarchCmd(command : string) : void {
-    this.gameService.retrarchCommand(command)
+    this.gameService.retroArchCommand(command)
       .then(() => console.log("successfully executed command: %s", command))
       .catch((err : never) => this.onUserError(`error occured while executing command: ${err}`));
   }
 
   public exit() : void {
-    this.gameService.stop({ id: null } as Game)
+    this.webSocketService.stop()
       .then((_game : Game) => console.log("successfully stopped game: %s", _game.name))
       .catch((err : never) => this.onUserError(`error occured while stopping game: ${err}`));
   }

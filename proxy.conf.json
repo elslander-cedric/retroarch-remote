@@ -10,5 +10,11 @@
       "port": 1337
     },
     "secure": false
+  },
+  "/ws": {
+    "target": {
+      "port": 1337
+    },
+    "secure": false
   }
 }

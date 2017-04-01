@@ -6,12 +6,15 @@ import * as url from 'url';
 import { JsonRequestHandler } from "./JsonRequestHandler";
 import { Game } from "../Game";
 import { GameTaskRunner } from "../GameTaskRunner";
+import { GameRegistry } from "../GameRegistry";
 
 export class GameStopRequestHandler extends JsonRequestHandler {
+  private gameRegistry : GameRegistry;
   private gameTaskRunner : GameTaskRunner;
 
-  constructor(gameTaskRunner : GameTaskRunner) {
+  constructor(gameRegistry : GameRegistry, gameTaskRunner : GameTaskRunner) {
     super();
+    this.gameRegistry = gameRegistry;
     this.gameTaskRunner = gameTaskRunner;
   };
 
@@ -24,6 +27,7 @@ export class GameStopRequestHandler extends JsonRequestHandler {
 
     this.gameTaskRunner.stop(game)
       .then((game: Game) => {
+        this.gameRegistry.games.forEach(game => game.running = false);        
         response.statusCode = 200; // ok
         this.postHandle(request, response);
       }, (err) => {

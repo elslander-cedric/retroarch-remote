@@ -2,7 +2,6 @@ import * as dgram from 'dgram';
 
 import { Config } from '../Config';
 
-// TODO-FIXME: Use this :)
 export class RetroArchUDPCommandExecutor {
 
   private config : Config;

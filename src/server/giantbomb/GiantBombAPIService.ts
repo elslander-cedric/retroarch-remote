@@ -1,4 +1,5 @@
 import * as http from 'http';
+import * as https from 'https';
 import * as querystring from 'querystring';
 import * as sync_request  from 'sync-request';
 import { IncomingMessage } from 'http';
@@ -52,7 +53,6 @@ export class GiantBombAPIService {
     // see http://stackoverflow.com/questions/22918573/giantbomb-api-work
     let options = {
       hostname: 'www.giantbomb.com',
-      port: 80,
       path: '/api/games/?' + querystring.stringify(query),
       method: 'GET',
       headers: {
@@ -73,7 +73,7 @@ export class GiantBombAPIService {
             return {
               id: game.id,
               name: game.name,
-              platform: game.platforms.find(platform => Platform[platform.id] ).id,
+              platform: game.platforms.find(platform => Platform[platform.id]).id,
               platforms: game.platforms.map(platform => platform.name).join(', '),
               summary: game.deck,
               description: game.description,
@@ -90,7 +90,7 @@ export class GiantBombAPIService {
     return Observable.create((observer : Observer<Buffer>) => {
       console.log(`[${options.method}] - ${options.path}`);
 
-      http.request(options, (response) => {
+      https.request(options, (response) => {
         response
         .on('data', (chunk : Buffer) => observer.next(chunk))
         .on('end', () => observer.complete())

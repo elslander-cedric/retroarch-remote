@@ -27,6 +27,11 @@ export class GameSearchRequestHandler extends JsonRequestHandler {
         response.statusCode = 200;
         response.write(JSON.stringify({ data: games }));
         this.postHandle(request, response);
+      })
+      .catch((err) => {
+        response.statusCode = 500; // internal server error
+        response.write(JSON.stringify({ errors: [err] }));
+        this.postHandle(request, response);
       });
   }
 }

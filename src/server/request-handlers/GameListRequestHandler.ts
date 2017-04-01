@@ -17,7 +17,7 @@ export class GameListRequestHandler extends JsonRequestHandler {
     this.preHandle(request, response);
 
     let requestUrl : Url = url.parse(request.url, true);
-    let games = this.gameRegistry.getFavorites();
+    let games = this.gameRegistry.games;
 
     response.statusCode = 200;
     response.write(JSON.stringify({ data: games }));

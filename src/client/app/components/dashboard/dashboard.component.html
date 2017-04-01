@@ -1,14 +1,13 @@
-<game-search></game-search>
+<div [ngClass]="'search'" fxLayout="column">
+  <md-input-container floatPlaceholder="never" type="text">
+    <input mdInput placeholder="Game search ..." (input)="onFilterInput($event.target.value)">
+  </md-input-container>
+</div>
 
-<!--
-TODO-FIXME: menu with:
-  - bring up retroarch menu
-  - exec command save/load state of game
-  - ext/start kodi
--->
 <md-chip-list>
   <md-chip *ngFor="let filter of filters"
   [color]="'primary'"
+  [hidden]="filter.type !== 'chip'"
   [disabled]="filter.disabled"
   [selected]="filter.selected"
   (click)="filter.selected = !filter.selected">{{ filter.name }}</md-chip>
@@ -16,8 +15,10 @@ TODO-FIXME: menu with:
 
 <md-card *ngFor="let game of games | gameFilter:filters | gameSort; trackBy:game?.id" fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="start end">
-    <ngb-rating fxFlex max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
-    <button [ngClass]="['delete-button']" md-icon-button (click)="remove(game)">
+    <!-- TODO-FIXME: ugly orange border on click/focus => css outline -->
+    <ngb-rating [ngClass]="['rating']" fxFlex max="5" [(rate)]="game.rating" (click)="p_rating = game.rating"
+    (rateChange)="p_rating && p_rating !== game.rating ? update(game) : false"></ngb-rating>
+    <button md-icon-button (click)="remove(game)">
       <md-icon>closed</md-icon>
     </button>
   </div>
@@ -59,8 +60,3 @@ TODO-FIXME: menu with:
   </div>
   <md-card-content>{{ game.summary }}</md-card-content>
 </md-card>
-
-<br/>
-
-<suggestions></suggestions>
-<available></available>

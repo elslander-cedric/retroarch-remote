@@ -1,0 +1,32 @@
+<div [ngClass]="['remote', running ? 'enabled' : 'disabled  ']" fxLayout="row">
+  <div [ngClass]="'control-group'">
+    <button md-icon-button (click)="retrarchCmd('RESET')">
+      <md-icon>replay</md-icon>
+    </button>
+    <button md-icon-button (click)="retrarchCmd('QUIT')">
+      <md-icon>stop</md-icon>
+    </button>
+  </div>
+  <div [ngClass]="'control-group'">
+    <button md-icon-button (click)="retrarchCmd('REWIND')">
+      <md-icon>fast_rewind</md-icon>
+    </button>
+    <button md-icon-button (click)="retrarchCmd('PAUSE_TOGGLE')">
+      <md-icon>{{ running ? 'pause' : 'play' }}</md-icon>
+    </button>
+    <button md-icon-button (click)="retrarchCmd('FAST_FORWARD')">
+      <md-icon>fast_forward</md-icon>
+    </button>
+  </div>
+  <div [ngClass]="'control-group'">
+    <button md-icon-button (click)="retrarchCmd('VOLUME_DOWN')">
+      <md-icon>volume_down</md-icon>
+    </button>
+    <button md-icon-button (click)="retrarchCmd('MUTE')">
+      <md-icon>volume_off</md-icon>
+    </button>
+    <button md-icon-button (click)="retrarchCmd('VOLUME_UP')">
+      <md-icon>volume_up</md-icon>
+    </button>
+  </div>
+</div>

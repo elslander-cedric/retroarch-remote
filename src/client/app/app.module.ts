@@ -19,11 +19,13 @@ import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { CarouselSlideComponent } from './components/carousel-slide/carousel-slide.component';
 import { GameService, DefaultRequestOptions } from "./services/game.service";
+import { WebSocketService  } from "./services/websocket.service";
 import { DefaultHammerGestureConfig } from "./shared/DefaultHammerGestureConfig";
 import { GameOverviewModalComponent } from './components/game-overview-modal/game-overview-modal.component';
 import { AvailableComponent } from './components/available/available.component';
 import { GameFilterPipe } from './pipes/game-filter/game-filter.pipe';
 import { GameSortPipe } from './pipes/game-sort/game-sort.pipe';
+import { RemoteComponent } from './components/remote/remote.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { GameSortPipe } from './pipes/game-sort/game-sort.pipe';
     GameOverviewModalComponent,
     AvailableComponent,
     GameFilterPipe,
-    GameSortPipe
+    GameSortPipe,
+    RemoteComponent
   ],
   entryComponents: [
     ConfirmModalComponent,
@@ -55,6 +58,7 @@ import { GameSortPipe } from './pipes/game-sort/game-sort.pipe';
   ],
   providers: [
     GameService,
+    WebSocketService,
     {
       provide: RequestOptions,
       useClass: DefaultRequestOptions

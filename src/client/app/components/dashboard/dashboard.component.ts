@@ -3,6 +3,7 @@ import { MaterialModule } from '@angular/material';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { GameService } from "../../services/game.service";
+import { WebSocketService } from "../../services/websocket.service";
 import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 
@@ -15,34 +16,58 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 export class DashboardComponent implements OnInit, OnDestroy {
   public games : Game[] = [];
 
-  public filters = [
+  public filters : Array<any> = [
     {
       name: 'NES',
-      type: 'platform',
-      matcher: 21,
+      type: 'chip',
+      matcher: 'platform',
+      value: 21,
       selected: true
     },{
       name: 'N64',
-      type: 'platform',
-      matcher: 43,
+      type: 'chip',
+      matcher: 'platform',
+      view: 'chip',
+      value: 43,
       selected: true
     },{
       name: 'two player',
-      type: 'multiplayer',
-      matcher: true,
-      selected: true
-    }
-  ];
+      type: 'chip',
+      matcher: 'nof-players',
+      disabled: true
+    },{
+      name: 'name',
+      type: 'text',
+      matcher: 'name',
+      value: ''
+  }];
 
-  constructor(private gameService: GameService, private modalService: NgbModal) {};
+  constructor(
+    private gameService: GameService,
+    private webSocketService : WebSocketService,
+    private modalService: NgbModal) {};
 
   public ngOnInit(): void {
     this.gameService.subscribe(this, () => { this.list(); });
+
+    this.webSocketService.games.subscribe((games: Game[]) => {
+      console.log(`dashoard - update games ...`);
+      this.games = games;
+    });
+
     this.list();
   }
 
   public ngOnDestroy() : void {
     this.gameService.unsubscribe(this);
+  }
+
+  public onFilterInput(value) : void {
+    this.filters.find(f => f.name === 'name').value = value;
+  }
+
+  public update2(test:any) : void {
+    console.log(`click - update rating ${test}`);
   }
 
   public update(game : Game) : void {
@@ -74,14 +99,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   public launch(game : Game) : void {
     console.log("launching game:", game.name);
-    this.gameService.launch(game)
+    this.webSocketService.launch(game)
       .then((_game : Game) => console.log("successfully launched game: %s", _game.name))
       .catch((err : never) => this.onUserError(`error occured while launching game: ${err}`));
   }
 
-  public stop(game : Game) : void {
-    console.log("stopping game:", game.name);
-    this.gameService.stop(game)
+  public stop() : void {
+    console.log("stopping game:");
+    this.gameService.stop()
       .then((_game : Game) => console.log("successfully stopped game: %s", _game.name))
       .catch((err : never) => this.onUserError(`error occured while stopping game: ${err}`));
   }

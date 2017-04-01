@@ -15,6 +15,7 @@ import { RetroArchUDPCommandExecutor } from './retroarch/RetroArchUDPCommandExec
 import { KodiLauncher } from './kodi/KodiLauncher';
 import { RequestDispatcher } from "./RequestDispatcher";
 import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
+import { WebsocketServer } from './WebsocketServer';
 
 export class Server {
   private server : http.Server;
@@ -36,6 +37,7 @@ export class Server {
       new GiantBombAPIService(config),
       new RetroArchUDPCommandExecutor(config));
 
+
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
       console.log("[%s] - %s", request.method, request.url);
 
@@ -56,6 +58,17 @@ export class Server {
 
     this.server.listen(config.get("port"));
     console.log("server listening");
+
+    //TODO-FIXME: put this somewhere else
+    new WebsocketServer(
+      this.server,
+      new GameRegistry().init(),
+      new GameLibrary().init(),
+      new GameTaskRunner(config,
+        new RetroArchLauncher(),
+        new KodiLauncher(),
+        new KodiRPCCommandExecutor(config))
+    ).start();
   }
 
   public stop() :void {

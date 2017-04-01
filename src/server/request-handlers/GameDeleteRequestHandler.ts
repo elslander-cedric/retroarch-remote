@@ -20,9 +20,9 @@ export class GameDeleteRequestHandler extends JsonRequestHandler {
 
     let requestUrl : Url = url.parse(request.url, true);
     let id = requestUrl.query['id'];
-    let game : Game = this.gameRegistry.getFavorite(parseInt(id));
+    let game : Game = this.gameRegistry.lookup(parseInt(id));
 
-    this.gameRegistry.removeFavorite(game)
+    this.gameRegistry.remove(game)
       .then((game: Game) => {
         response.statusCode = 200; // ok
         this.postHandle(request, response);

@@ -78,7 +78,7 @@ export class GameTaskRunner {
 
   }
 
-  public stop(game : Game) : Promise<any|void> {
+  public stop(game ?: Game) : Promise<any|void> {
     // TODO-FIXME: to be tested
     // TODO-FIXME: check if config('kodi') === true
     const kodiArgs = ['/usr/bin/xbmc', '-nocursor', ':0'];

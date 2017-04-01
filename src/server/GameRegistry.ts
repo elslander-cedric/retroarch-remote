@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 
 import { Promise } from 'bluebird';
+import { Subject } from 'rxjs/Subject';
 
 import { Game } from "./Game";
 
@@ -9,7 +10,9 @@ export class GameRegistry {
   private static fileEncoding = 'utf-8';
   private static path = 'registry.json';
 
-  private games : Array<Game> = [];
+  private _games : Array<Game> = [];
+
+  public notifier = new Subject<Game[]>();
 
   constructor() {};
 
@@ -22,24 +25,25 @@ export class GameRegistry {
         flag: exists ? 'r+' : 'w+'
       }, (err, data) => {
         if (err) throw err;
-        that.games = JSON.parse(data || '[]');
+        that._games = JSON.parse(data || '[]');
       });
     });
 
     return this;
   }
 
-  public save() : Promise<any|void> {
+  public write() : Promise<any|void> {
     return new Promise((resolve, reject) => {
       fs.writeFile(
         GameRegistry.path,
-        JSON.stringify(this.games),
+        JSON.stringify(this._games),
         { encoding: GameRegistry.fileEncoding, flag: 'w' },
         (err) => {
           if (err) {
-            reject(`save error: ${err}`)
+            reject(`write error: ${err}`)
           } else {
-            resolve(`save ok`);
+            this.notifier.next(this._games);
+            resolve(`write ok`);
           }
         }
       );
@@ -47,7 +51,7 @@ export class GameRegistry {
   }
 
   public update(game : Game) : Promise<any|void> {
-    let _game : Game = this.games.find(__game => __game.id === game.id);
+    let _game : Game = this._games.find(__game => __game.id === game.id);
 
     for(let property in game) {
         if (game.hasOwnProperty(property)) {
@@ -55,28 +59,30 @@ export class GameRegistry {
         }
     }
 
-    return this.save();
+    return this.write();
   }
 
-  public addFavorite(game : Game) : Promise<any|void> {
-    if(this.games.find(_game => _game.id === game.id)) {
+  public add(game : Game) : Promise<any|void> {
+    if(this._games.find(_game => _game.id === game.id)) {
       return Promise.reject("game already in list");
     }
 
-    this.games.push(game);
-    return this.save();
+    this._games.push(game);
+    return this.write();
   }
 
-  public removeFavorite(game : Game) : Promise<any|void> {
-    this.games = this.games.filter(_game => _game.id !== game.id);
-    return this.save();
+  public remove(game : Game) : Promise<any|void> {
+    this._games = this._games.filter(_game => _game.id !== game.id);
+    return this.write();
   }
 
-  public getFavorite(id : number) : Game {
-    return this.games.find(game => game.id === id);
+  public lookup(id : number, platform ?: number) : Game {
+    return this._games.find(game => {
+      return game.id === id && (platform ? game.platform === platform : true);
+    });
   }
 
-  public getFavorites() : Array<Game> {
-    return this.games;
+  get games() : Array<Game> {
+    return this._games;
   }
 }

@@ -1,9 +1,10 @@
-.menu-button {
-  padding-right: 20px;
+button:focus {
+  outline: none;
 }
 
-.menu-button:focus {
-    outline: none;
+.menu-button {
+  margin-left: -10px;
+  padding-right: 10px;
 }
 
 .game-search-input {

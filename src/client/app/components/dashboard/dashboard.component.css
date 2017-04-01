@@ -1,29 +1,9 @@
 md-card {
-  /*padding-bottom: 50px;*/
   margin: 20px 10px 20px 10px;
 }
 
-ngb-rating {
-    padding-bottom: 15px;
-}
-
-ngb-rating:focus, .delete-button:focus {
-    outline: none;
-}
-
-md-chip {
-  margin-top: 10px;
-  margin-left: 10px;
-}
-
-.play {
-  position: absolute;
-  opacity: .6;
-  height: 40px;
-}
-
-md-card-content {
-  padding-top: 20px;
+md-card-title {
+  margin-bottom: 10px;
 }
 
 md-card-subtitle div, md-card-title div {
@@ -32,11 +12,39 @@ md-card-subtitle div, md-card-title div {
   text-overflow: ellipsis;
 }
 
-md-card-title {
-  margin-bottom: 10px;
+md-card-content {
+  padding-top: 20px;
+}
+
+ngb-rating {
+  padding-bottom: 15px;
+}
+
+ngb-rating span:focus {
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+md-chip {
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 img[md-card-avatar] {
   height: 100%;
   width: auto;
+}
+
+img.play {
+  position: absolute;
+  opacity: .6;
+  height: 40px;
+}
+
+.search {
+  margin-left: 10px;
+  margin-right: 10px;
 }

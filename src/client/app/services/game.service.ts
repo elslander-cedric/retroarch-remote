@@ -18,13 +18,15 @@ export class GameService {
 
   //const gamesUrl = `http://${ location.host }:1337/games`;
   private baseUrl : string = '/games';
-  private eventEmitter = new Subject();
   private subscriptions : Object = {};
+
+  public eventEmitter = new Subject();
 
   constructor(private http: Http, private jsonp : Jsonp) {}
 
   public subscribe(referer : any, eventHandler : () => void) : void {
-    this.subscriptions[referer] = this.eventEmitter.asObservable().subscribe(eventHandler);
+    this.subscriptions[referer] =
+      this.eventEmitter.asObservable().subscribe(eventHandler);
   }
 
   public unsubscribe(referer : any) : void {
@@ -83,7 +85,8 @@ export class GameService {
       .catch(this.handleError);
   }
 
-  public stop(game: Game) : Promise<Game> {
+  // TODO-FIXME: cleanup: stop doesn't need game argument
+  public stop(game?: Game) : Promise<Game> {
     const url = `${this.baseUrl}/stop/`;
 
     let params = new URLSearchParams();
@@ -171,7 +174,7 @@ export class GameService {
       .catch(this.handleError);
   }
 
-  public retrarchCommand(command : string) : Promise<any> {
+  public retroArchCommand(command : string) : Promise<any> {
     const url = `/retroarch/?command=${command}`;
 
     return this.http
@@ -186,7 +189,9 @@ export class GameService {
     if (response instanceof Response) {
       const body = response.json() || '';
       const errors = body.errors || JSON.stringify(body);
-      errMsg = `${response.status} - ${response.statusText || ''} ${errors.join(', ')}`;
+      // TODO-FIXME: errors.join is not a function
+      // errMsg = `${response.status} - ${response.statusText || ''} ${errors.join(', ')}`;
+      errMsg = errors;
     } else {
       errMsg = response.message ? response.message : response.toString();
     }

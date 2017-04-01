@@ -1,0 +1,25 @@
+.remote {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  background-color: #AAAAAA;
+  opacity: 0.9;
+  transition: ease-in 0.2s;
+}
+
+.remote.enabled {
+  transform: translate3d(0px,0px,0px);
+}
+
+.remote.disabled {
+  transform: translate3d(0px,100px,0px);
+}
+
+.control-group {
+  /*background-color: #888888;*/
+  /*border: 2px solid #DDDDDD;*/
+  /*border-radius: 10px;*/
+  margin: 5px 1px 5px 1px;
+  /*box-shadow: inset 10px 10px 10px #AAAAAA;*/
+}
