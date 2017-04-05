@@ -1,20 +1,25 @@
 {
   "/games": {
     "target": {
+      "host": "localhost",
       "port": 1337
     },
     "secure": false
   },
   "/retroarch": {
     "target": {
+      "host": "localhost",
       "port": 1337
     },
     "secure": false
   },
   "/ws": {
     "target": {
-      "port": 1337
+      "host": "localhost",
+      "port": 1338
     },
+    "ws": true,
+    "logLevel": "debug",
     "secure": false
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -16,14 +17,21 @@ export class WebSocketService {
   public games_ : Game[];
   public games = new Subject<Game[]>();
 
-  constructor() {
+  constructor(private http: Http) {
     this.connect();
   }
 
   public connect() : void {
-    // TODO-FIXME : doesn't work :(
-    this.ws = new WebSocket(`ws://${location.host}/ws"`);
+    // TODO-FIXME : this is a workaround, to force http upgrade first %(
+    this.http.get(`http://${location.host}/ws`)
+      .toPromise()
+      .then(() => console.log("ws http sent"))
+      .catch(() => console.log("ws http error"));
+
+    this.ws = new WebSocket(`ws://${location.host}/ws`, "http");
     // this.ws = new WebSocket(`ws://localhost:1338/ws"`);
+
+    console.log("sent ws request")
 
     this.ws.onerror = (err) => console.log(`websocket onerror ${err}`);
     this.ws.onopen = () => {
@@ -88,17 +96,20 @@ export class WebSocketService {
             case 'add':
               this.games_ = this.games_.concat(data.game);
               break;
-
-            case 'launch':
-              this.games_.find((game) => game.id === data.game.id).running = true;
+            case 'remove':
+              this.games_ = this.games_.filter(game => game.id !== data.game.id);
               break;
-
+            case 'update':
+              break;
+            case 'launch':
+              this.games_.find(game => game.id === data.game.id).running = true;
+              break;
             case 'stop':
               this.games_.forEach(game => game.running = false);
               break;
           }
 
-          resolve(data.result);
+          resolve(data.game);
       }
 
       if(data.games) {

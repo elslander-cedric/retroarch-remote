@@ -23,7 +23,7 @@ export class Server {
   constructor() {};
 
   public start() : void {
-    console.log("starting server ...");
+    console.log("starting http server ...");
 
     let config : Config = new Config().init();
 
@@ -56,9 +56,6 @@ export class Server {
       }
     });
 
-    this.server.listen(config.get("port"));
-    console.log("server listening");
-
     //TODO-FIXME: put this somewhere else
     new WebsocketServer(
       this.server,
@@ -69,6 +66,9 @@ export class Server {
         new KodiLauncher(),
         new KodiRPCCommandExecutor(config))
     ).start();
+
+    this.server.listen(config.get("port"));
+    console.log("http server listening");
   }
 
   public stop() :void {

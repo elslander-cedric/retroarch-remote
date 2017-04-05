@@ -51,30 +51,20 @@ export class GameTaskRunner {
     ];
 
     // TODO-FIXME: check if config('kodi') === true
-    return this.download(game)
-      .then((result) => console.log(`game downloaded ok: ${result}`))
-      .catch((err) => console.error(`game downloaded error: ${err}`))
-      .then(() => this.kodiRPCCommandExecutor.stop())
-      .then((result) => console.log(`kodi stop ok: ${result}`))
+    return Promise
+      .try(() => this.download(game))
+      .then(() =>this.kodiRPCCommandExecutor.stop())
+      .catch(() => Promise.resolve(`kodi was not running`))
       .delay(3000)
-      .catch((err) => console.error(`kodi stop error: ${err}`))
-      .then(() => {
-        console.log(`try to stop retroarch`);
-        return this.retroArchProcessExecution.stop();
-      })
-      .then((result) => console.log(`retroarch stop ok: ${result}`))
-      .catch((err) => console.error(`retroarch stop error: ${err}`))
+      .then(() => this.retroArchProcessExecution.stop())
+      .catch(() => Promise.resolve(`retroarch was not running`))
       .delay(1000)
-      .then(() => {
-        console.log(`try to start retroarch`);
-        return this.retroArchLauncher.launch(retroArchArgs);
-      })
+      .then(() => this.retroArchLauncher.launch(retroArchArgs))
       .then((retroArchProcessExecution: ProcessExecution) => {
-        console.log(`retroarch was started, pid: ${retroArchProcessExecution.pid()}`);
         this.retroArchProcessExecution = retroArchProcessExecution;
-        return this.retroArchProcessExecution;
+        Promise.resolve(`retroarch was started`);
       })
-      .catch((err) => console.error(`retroarch launch error: ${err}`));
+      .catch((err) => Promise.reject(`retroarch launch error: ${err}`));
 
   }
 
@@ -84,30 +74,22 @@ export class GameTaskRunner {
     const kodiArgs = ['/usr/bin/xbmc', '-nocursor', ':0'];
 
     return Promise
-      .try(() => {
-        console.log(`try to stop retroarch`);
-        return this.retroArchProcessExecution.stop();
-      })
-      .then((result) => console.log(`retroarch stop result: ${result}`))
-      .catch((err) => console.error(`retroarch stop error: ${err}`))
+      .try(() => this.retroArchProcessExecution.stop())
+      .catch(() => Promise.resolve(`retroarch was not running`))
       .delay(1000)
-      .then(() => {
-        console.log(`try to launch kodi`);
-        return this.kodiLauncher.launch(kodiArgs);
-      })
+      .then(() => this.kodiLauncher.launch(kodiArgs))
       .then((kodiProcessExecution: ProcessExecution) => {
-          console.log(`kodi was started`);
           this.kodiProcessExecution = kodiProcessExecution;
-          return this.kodiProcessExecution;
+          Promise.resolve(`kodi was started`);
       })
-      .catch((err) => console.error(`kodi launch error: ${err}`));
+      .catch((err) => Promise.reject(`kodi launch error: ${err}`));
   }
 
   public download(game : Game) : Promise<string|void> {
     const pathGame = path.resolve(this.config.get("downloadDir"), `${game.id}`);
     const pathArchive = pathGame + '.zip';
 
-    if(fs.existsSync(pathGame)) return Promise.reject("game was already downloaded");
+    if(fs.existsSync(pathGame)) return Promise.resolve("game was already downloaded");
 
     return new Promise((resolve, reject) => {
       request

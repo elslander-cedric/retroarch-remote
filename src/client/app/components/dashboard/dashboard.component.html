@@ -16,8 +16,7 @@
 <md-card *ngFor="let game of games | gameFilter:filters | gameSort; trackBy:game?.id" fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="start end">
     <!-- TODO-FIXME: ugly orange border on click/focus => css outline -->
-    <ngb-rating [ngClass]="['rating']" fxFlex max="5" [(rate)]="game.rating" (click)="p_rating = game.rating"
-    (rateChange)="p_rating && p_rating !== game.rating ? update(game) : false"></ngb-rating>
+    <ngb-rating [ngClass]="['rating']" fxFlex max="5" [(rate)]="game.rating" (rateChange)="update(game)"></ngb-rating>
     <button md-icon-button (click)="remove(game)">
       <md-icon>closed</md-icon>
     </button>

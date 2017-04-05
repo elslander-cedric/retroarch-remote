@@ -48,26 +48,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private modalService: NgbModal) {};
 
   public ngOnInit(): void {
-    this.gameService.subscribe(this, () => { this.list(); });
+    //this.gameService.subscribe(this, () => { this.list(); });
 
     this.webSocketService.games.subscribe((games: Game[]) => {
       console.log(`dashoard - update games ...`);
       this.games = games;
     });
 
-    this.list();
+    //this.list();
   }
 
   public ngOnDestroy() : void {
-    this.gameService.unsubscribe(this);
+    //this.gameService.unsubscribe(this);
   }
 
   public onFilterInput(value) : void {
     this.filters.find(f => f.name === 'name').value = value;
-  }
-
-  public update2(test:any) : void {
-    console.log(`click - update rating ${test}`);
   }
 
   public update(game : Game) : void {
@@ -75,7 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     console.log("update game:", game.name);
 
-    this.gameService.update(game)
+    this.webSocketService.update(game)
       .then((_game : Game) => console.log("successfully updated game: %s", game.name))
       .catch((err : never) => this.onUserError(`error occured while updating game: ${err}`));
   }
@@ -113,7 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   public remove(game : Game) : void {
     console.log("removing game:", game.name);
-    this.gameService.remove(game)
+    this.webSocketService.remove(game)
       .then(() => console.log("successfully removed game: %s", game.name))
       .catch((err : never) => this.onUserError(`error occured while removing game: ${err}`));
   }

@@ -55,7 +55,8 @@ export class GameSearchComponent implements OnInit {
   public addGame(game : Game) : Promise<Game> {
     console.log("add game:", game.name);
 
-    return this.gameService
+    // return this.gameService
+    return this.webSocketService
       .add(game)
       .then(() => console.log("successfully added game: %s", game.name))
       .catch((err : never) => this.onUserError(`error occured while adding game: ${err}`));
@@ -69,7 +70,7 @@ export class GameSearchComponent implements OnInit {
 
   public exit() : void {
     this.webSocketService.stop()
-      .then((_game : Game) => console.log("successfully stopped game: %s", _game.name))
+      .then(() => console.log("successfully stopped game"))
       .catch((err : never) => this.onUserError(`error occured while stopping game: ${err}`));
   }
 

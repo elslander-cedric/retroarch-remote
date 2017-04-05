@@ -16,7 +16,7 @@ import {
 import { CarouselSlideComponent } from "../carousel-slide/carousel-slide.component";
 
 @Directive({ selector: 'div' })
-class CarouselContainer {}
+export class CarouselContainer {}
 
 @Component({
   selector: 'carousel',

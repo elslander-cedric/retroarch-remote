@@ -15,7 +15,7 @@ export class ProcessExecution {
   public stop() : Promise<string> {
     return new Promise((resolve, reject) => {
       if(this.process === null) {
-        reject("process is not running");
+        resolve(`process is not running`);
       } else {
         this.process.kill();
         this.process = null;

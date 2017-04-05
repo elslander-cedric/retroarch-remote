@@ -30,6 +30,10 @@ export class WebsocketServer {
 
     // this.server = new _ws.Server({ port: 1338 });
     this.server = new _ws.Server({ server: this.httpServer });
+    // this.server = new _ws.Server({
+    //   host: "localhost",
+    //   port: 1338
+    // });
 
     this.server.on('connection', (ws : _ws.WebSocket) => {
       console.log(`connection from ${ws}`);
@@ -50,6 +54,26 @@ export class WebsocketServer {
 
           case 'add':
             this.gameRegistry.add(data.game)
+              .then((result) => ws.send(JSON.stringify({
+                action: data.action,
+                result: result,
+                game: data.game })))
+              .then(() => this.sendNotifications(ws))
+              .catch((err) => ws.send(JSON.stringify({ err: err })));
+              break;
+
+          case 'remove':
+            this.gameRegistry.remove(data.game)
+              .then((result) => ws.send(JSON.stringify({
+                action: data.action,
+                result: result,
+                game: data.game })))
+              .then(() => this.sendNotifications(ws))
+              .catch((err) => ws.send(JSON.stringify({ err: err })));
+              break;
+
+          case 'update':
+            this.gameRegistry.update(data.game)
               .then((result) => ws.send(JSON.stringify({
                 action: data.action,
                 result: result,
@@ -95,7 +119,7 @@ export class WebsocketServer {
     });
 
     this.server.on('headers', (headers) => console.log('headers: %s', headers));
-    this.server.on('listening', () => console.log('listening'));
+    this.server.on('listening', () => console.log('ws server listening'));
     this.server.on('error', (err) => console.log('error: %s', err));
 
     this.gameRegistry.notifier.subscribe((games : Game[]) => {

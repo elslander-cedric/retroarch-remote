@@ -36,19 +36,11 @@ export class KodiRPCCommandExecutor {
               console.log(`kodi response: problem with response: ${e.message}`);
               reject(`kodi response: problem with response: ${e.message}`)
             });
-        }).on('aborted', () => {
-          console.log(`kodi request: aborted`);
-          resolve(`kodi request: aborted`);
-        }).on('response', (response) => {
-          console.log(`kodi request: response received`);
-          resolve(`kodi request: response received`)
-        }).on('end', () => {
-          console.log(`kodi request: ok`);
-          resolve(`kodi request: ok`)
-        }).on('error', (e) => {
-          console.log(`kodi request: problem with request: ${e.message}`)
-          reject(`kodi request: problem with request: ${e.message}`)
-        });
+        })
+        .on('aborted', () => resolve(`kodi RPC command aborted`))
+        .on('response', (response) => resolve(`kodi RPC command response received`))
+        .on('end', () => resolve(`kodi RPC command ok`))
+        .on('error', (e) => reject(`kodi RPC command problem: ${e.message}`));
 
       request.write(JSON.stringify({ jsonrpc: "2.0", method: "Application.Quit", id: 1} ));
       request.end();

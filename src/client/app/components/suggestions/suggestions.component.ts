@@ -13,6 +13,7 @@ import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/scan';
 
 import { GameService } from "../../services/game.service";
+import { WebSocketService } from "../../services/websocket.service";
 import { Game } from "../../shared/game";
 import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 import { CarouselComponent } from "../carousel/carousel.component";
@@ -32,6 +33,7 @@ export class SuggestionsComponent implements OnInit {
 
   constructor(
     private gameService: GameService,
+    private webSocketService : WebSocketService,
     private modalService: NgbModal) {};
 
   public ngOnInit(): void {
@@ -65,7 +67,8 @@ export class SuggestionsComponent implements OnInit {
     modalRef.componentInstance.game = game;
     modalRef.result.then((result) => {
       if(result == 'add') {
-        this.gameService.add(game);
+        // this.gameService.add(game);
+        this.webSocketService.add(game);
       }
     });
   }

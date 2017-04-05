@@ -8,7 +8,7 @@ import { Game } from '../../shared/game';
 export class GameSortPipe implements PipeTransform {
 
   transform(games : Game[], filters: any[]): any {
-    return games.sort((a: Game, b : Game) => a.rating > b.rating ? -1 : (a.rating === b.rating ? 0 : 1));
+    return games.sort((a: Game, b : Game) => b.rating - a.rating);
   }
 
 }

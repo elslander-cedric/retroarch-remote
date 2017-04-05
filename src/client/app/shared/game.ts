@@ -6,7 +6,7 @@ export class Game {
   private _image: string;
   private _platform: number;
   private _platforms: string;
-  private _rating : string;
+  private _rating : number;
   private _releasedate : string;
   private _running : boolean;
 
@@ -66,11 +66,11 @@ export class Game {
     this._platforms = platforms;
   }
 
-  get rating() : string {
+  get rating() : number {
     return this._rating;
   }
 
-  set rating(rating : string) {
+  set rating(rating : number) {
     this._rating = rating;
   }
 

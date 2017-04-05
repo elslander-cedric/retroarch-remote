@@ -33,22 +33,27 @@ export class FileRequestHandler implements RequestHandler {
         response.statusCode = exists ? 200 : 404;
 
         if(exists){
-          let lastModified = fs.statSync(filename).mtime;
-
-          response.setHeader('Content-Type', mime.lookup(filename));
-          response.setHeader("Last-Modified", lastModified.toUTCString());
-
-          let ifModifiedSince = request.headers["if-modified-since"];
-
-          if(ifModifiedSince) {
-            if(Math.floor(new Date(ifModifiedSince).getTime()/1000) === Math.floor(lastModified.getTime()/1000)){
-              response.statusCode = 304;
+          fs.exists(filename + '.gz', function(exists) {
+            if(exists) {
+              filename += '.gz';
+              response.setHeader('Content-Encoding', 'gzip');
             }
-          }
-        }
 
-        if(response.statusCode === 200) {
-          fs.createReadStream(filename).pipe(response);
+            let lastModified = fs.statSync(filename).mtime;
+
+            response.setHeader('Content-Type', mime.lookup(filename));
+            response.setHeader("Last-Modified", lastModified.toUTCString());
+
+            let ifModifiedSince = request.headers["if-modified-since"];
+
+            if(ifModifiedSince) {
+              if(Math.floor(new Date(ifModifiedSince).getTime()/1000) === Math.floor(lastModified.getTime()/1000)){
+                response.statusCode = 304;
+              }
+            }
+
+            fs.createReadStream(filename).pipe(response);
+          });
         } else {
           response.end();
         }

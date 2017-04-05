@@ -16,7 +16,7 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { GameSearchComponent } from './components/game-search/game-search.component';
 import { SuggestionsComponent } from './components/suggestions/suggestions.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
-import { CarouselComponent } from './components/carousel/carousel.component';
+import { CarouselComponent, CarouselContainer } from './components/carousel/carousel.component';
 import { CarouselSlideComponent } from './components/carousel-slide/carousel-slide.component';
 import { GameService, DefaultRequestOptions } from "./services/game.service";
 import { WebSocketService  } from "./services/websocket.service";
@@ -35,6 +35,7 @@ import { RemoteComponent } from './components/remote/remote.component';
     SuggestionsComponent,
     ConfirmModalComponent,
     CarouselComponent,
+    CarouselContainer,
     CarouselSlideComponent,
     GameOverviewModalComponent,
     AvailableComponent,
