@@ -10,9 +10,11 @@ import { Game } from '../../shared/game';
 })
 export class GameOverviewModalComponent implements OnInit {
 
-  constructor(private activeModal: NgbActiveModal) { }
+  public game : Game;
 
-  ngOnInit() {
+  constructor(public activeModal: NgbActiveModal) { }
+
+  public ngOnInit() :void {
   }
 
   public add(game : Game) : void {

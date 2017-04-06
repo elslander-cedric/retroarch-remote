@@ -1,6 +1,7 @@
 import './rxjs-extensions';
 
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule, RequestOptions } from '@angular/http';
@@ -48,11 +49,12 @@ import { RemoteComponent } from './components/remote/remote.component';
     GameOverviewModalComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     HttpModule,
     JsonpModule,
-    MaterialModule.forRoot(),
+    MaterialModule,
     FlexLayoutModule,
     Md2Module.forRoot(),
     NgbModule.forRoot()

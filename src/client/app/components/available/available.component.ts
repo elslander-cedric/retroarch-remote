@@ -28,6 +28,8 @@ export class AvailableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(CarouselComponent) carousel : CarouselComponent;
 
+  public game: Game;
+
   public games : Observable<Game[]>;
   private gamesQuery = new Subject<number>();
 

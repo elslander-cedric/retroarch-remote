@@ -14,7 +14,7 @@ import {
 export class CarouselSlideComponent implements OnInit, AfterViewInit {
   @Input() image : string;
 
-  private offsetX : number = 0;
+  public offsetX : number = 0;
   private positionX : number = 0;
 
   constructor(private el : ElementRef, private renderer : Renderer) {}

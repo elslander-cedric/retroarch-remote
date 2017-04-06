@@ -14,6 +14,9 @@ import { ConfirmModalComponent } from "../confirm-modal/confirm-modal.component"
 })
 
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  public game: Game;
+
   public games : Game[] = [];
 
   public filters : Array<any> = [
@@ -72,7 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log("update game:", game.name);
 
     this.webSocketService.update(game)
-      .then((_game : Game) => console.log("successfully updated game: %s", game.name))
+      .then((_game : Game) => console.log("successfully updated game: %s", _game.name))
       .catch((err : never) => this.onUserError(`error occured while updating game: ${err}`));
   }
 

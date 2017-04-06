@@ -16,7 +16,7 @@
   "/ws": {
     "target": {
       "host": "localhost",
-      "port": 1338
+      "port": 1337
     },
     "ws": true,
     "logLevel": "debug",

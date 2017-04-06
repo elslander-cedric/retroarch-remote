@@ -28,6 +28,8 @@ export class SuggestionsComponent implements OnInit {
 
   @ViewChild(CarouselComponent) carousel : CarouselComponent;
 
+  public game: Game;
+
   public games : Observable<Game[]>;
   private gamesQuery = new Subject<number>();
 
