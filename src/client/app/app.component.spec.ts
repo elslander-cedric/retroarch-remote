@@ -2,18 +2,16 @@
 
 import { TestBed, async, ComponentFixtureAutoDetect } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { DashboardComponent } from "./dashboard.component";
 import { MaterialModule } from '@angular/material';
 
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        MaterialModule.forRoot()
+        MaterialModule
       ],
       declarations: [
-        AppComponent,
-        DashboardComponent
+        AppComponent
       ],
       providers: [
         { provide: ComponentFixtureAutoDetect, useValue: true }

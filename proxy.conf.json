@@ -21,5 +21,12 @@
     "ws": true,
     "logLevel": "debug",
     "secure": false
+  },
+  "/giantbomb": {
+    "target": {
+      "host": "localhost",
+      "port": 1337
+    },
+    "secure": false
   }
 }

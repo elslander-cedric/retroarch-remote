@@ -34,13 +34,13 @@ md-chip {
 }
 
 img[md-card-avatar] {
-  height: 100%;
+  height: 40px;
   width: auto;
 }
 
 img.play {
   position: absolute;
-  opacity: .6;
+  opacity: .4;
   height: 40px;
 }
 

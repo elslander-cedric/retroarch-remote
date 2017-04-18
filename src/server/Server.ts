@@ -4,6 +4,7 @@ require("../../library.N64.json");
 import { IncomingMessage, ServerResponse } from "http";
 
 import * as http from "http";
+import * as url from 'url';
 
 import { Config } from "./Config";
 import { GameRegistry } from "./GameRegistry";
@@ -16,6 +17,7 @@ import { KodiLauncher } from './kodi/KodiLauncher';
 import { RequestDispatcher } from "./RequestDispatcher";
 import { GiantBombAPIService } from "./giantbomb/GiantBombAPIService";
 import { WebsocketServer } from './WebsocketServer';
+import { GiantBombProxy } from  './giantbomb/GiantBombProxy';
 
 export class Server {
   private server : http.Server;
@@ -37,9 +39,15 @@ export class Server {
       new GiantBombAPIService(config),
       new RetroArchUDPCommandExecutor(config));
 
+    let giantBombProxy = new GiantBombProxy();
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
       console.log("[%s] - %s", request.method, request.url);
+
+      if(url.parse(request.url).pathname.startsWith('/giantbomb')) {
+        giantBombProxy.proxy(request, response)
+        return;
+      }
 
       // common http headers
       response.setHeader('Access-Control-Allow-Origin', '*');

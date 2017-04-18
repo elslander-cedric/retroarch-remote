@@ -77,7 +77,7 @@ export class GiantBombAPIService {
               platforms: game.platforms.map(platform => platform.name).join(', '),
               summary: game.deck,
               description: game.description,
-              image: game.image ? game.image.icon_url : undefined
+              image: game.image ? game.image.icon_url.replace('https://www.giantbomb.com','/giantbomb') : undefined
             } as Game
           })
         } else {

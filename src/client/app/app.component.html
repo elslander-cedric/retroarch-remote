@@ -3,17 +3,14 @@
 <game-search></game-search>
 
 <md2-accordion [multiple]="true">
-  <md2-accordion-tab header="Library" active="true">
+  <md2-accordion-tab #dashboard header="Library" active="true">
     <dashboard></dashboard>
   </md2-accordion-tab>
-  <md2-accordion-tab header="Suggestions" active="false">
-    <suggestions></suggestions>
+  <md2-accordion-tab #suggestions header="Suggestions" active="false">
+    <suggestions *ngIf="suggestions.active"></suggestions>
   </md2-accordion-tab>
-  <md2-accordion-tab active="false">
-      <md2-accordion-header>
-          Available
-      </md2-accordion-header>
-      <available></available>
+  <md2-accordion-tab #available header="Available" active="false">
+      <available *ngIf="available.active"></available>
   </md2-accordion-tab>
 </md2-accordion>
 

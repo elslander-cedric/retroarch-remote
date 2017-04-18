@@ -33,6 +33,7 @@ export class FileRequestHandler implements RequestHandler {
         response.statusCode = exists ? 200 : 404;
 
         if(exists){
+          // TODO-FIXME: should first check supported encodings by client
           fs.exists(filename + '.gz', function(exists) {
             if(exists) {
               filename += '.gz';
